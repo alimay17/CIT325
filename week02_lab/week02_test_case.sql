@@ -1,9 +1,9 @@
-/****************************
-Week 02 Lab 2.1 - Test Case
+/*
+Name: week02_test_case.sql
 Author: Alice Smith
-9 Jan 2023
-CIT325 - Prof. Hinkley
-****************************/
+Date: 09-JAN-2023
+*/
+
 /* Drop the types from most to least dependent. */
 DROP TYPE table_list;
 DROP TYPE table_struct;
