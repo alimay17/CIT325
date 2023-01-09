@@ -1,7 +1,7 @@
 /*
-   Name:   script.sql
+   Name:   apply_plsql_lab2-2.sql
    Author: Alice Smith
-   Date:   DD-MON-YYYY
+   Date:   09-JAN-2023
 */
 
 -- Put code that you call from other scripts here because they may create
@@ -15,15 +15,27 @@
 -- Remove any spool filename and spool off command when you call
 -- the script from a shell script.
 -- ------------------------------------------------------------
-SPOOL script.txt
+SPOOL apply_plsql_lab2-2.txt
 
 -- Add an environment command to allow PL/SQL to print to console.
 SET SERVEROUTPUT ON SIZE UNLIMITED
 SET VERIFY OFF
 
 -- Put your code here, like this "Hello Whom!" program.
+
+DECLARE
+  lv_raw_input VARCHAR2;
+  lv_input VARCHAR2(10);
+
 BEGIN
-  dbms_output.put_line('Hello '||'&1'||'!');
+  
+
+  dbms_output.put_line('Hello '||'&1');
+
+
+EXCEPTION
+  WHEN OTHERS THEN
+    dbms_output.put_line('Exception ['||SQLERRM||']');
 END;
 /
 
@@ -38,4 +50,4 @@ SPOOL OFF
 -- a program from the command line. Please make sure you comment the
 -- following command when you want to remain inside the interactive
 -- SQL*Plus connection.
-QUIT;
+-- QUIT;
