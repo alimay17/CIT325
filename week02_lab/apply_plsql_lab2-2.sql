@@ -24,13 +24,13 @@ SET VERIFY OFF
 -- Put your code here, like this "Hello Whom!" program.
 
 DECLARE
-  lv_raw_input VARCHAR2;
+  lv_raw_input VARCHAR2(255);
   lv_input VARCHAR2(10);
 
 BEGIN
   
 
-  dbms_output.put_line('Hello '||'&1');
+  dbms_output.put_line('Hello '||'&Name');
 
 
 EXCEPTION
