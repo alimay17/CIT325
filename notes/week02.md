@@ -55,3 +55,8 @@ DECLARE
   /
 ```
 Only use local named blocks if there is no chance that something else will need to use them.
+
+## Collection and Array Types
+- ATD Table = Abstract Data Type table of build in data types
+- UDT Collection = User Defined Types (OBJECTS) Table of Objects
+- varray = Variable array. Or array of variables. (not super helpful. Lots of issues. Avoid.)
