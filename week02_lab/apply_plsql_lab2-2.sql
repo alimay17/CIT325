@@ -31,9 +31,9 @@ BEGIN
   ELSIF LENGTH(lv_raw_input) <=10 THEN
     lv_input := lv_raw_input;
   ELSE 
-    lv_input := 'World!'; 
+    lv_input := 'World'; 
   END IF;
-   dbms_output.put_line('Hello '||lv_input);
+   dbms_output.put_line('Hello '||lv_input||'!');
 END;
 /
 
