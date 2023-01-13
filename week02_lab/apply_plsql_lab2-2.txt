@@ -1,0 +1,5 @@
+Enter value for name: mike
+Hello mike                                                                      
+
+PL/SQL procedure successfully completed.
+
