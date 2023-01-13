@@ -29,10 +29,14 @@ DECLARE
 
 BEGIN
   
-  lv_raw_input := &input;
+  lv_raw_input := &1;
 
   IF NLV(lv_raw_input.COUNT > 10) THEN
     lv_input := SUBSTR(lv_raw_input, 1, 10);
+  ELSE IF NVL(lv_raw_input.count < 10) THEN
+    lv_input := lv_raw_input;
+  ELSE 
+    lv_input := 'World!' 
   
 
   dbms_output.put_line('Hello '||lv_input);
