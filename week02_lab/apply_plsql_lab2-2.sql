@@ -25,12 +25,17 @@ SET VERIFY OFF
 
 DECLARE
   lv_raw_input VARCHAR2(255);
-  lv_input VARCHAR2(10);
+  lv_input CHAR(10);
 
 BEGIN
   
+  lv_raw_input := &input;
 
-  dbms_output.put_line('Hello '||'&Name');
+  IF NLV(lv_raw_input.COUNT > 10) THEN
+    lv_input := SUBSTR(lv_raw_input, 1, 10);
+  
+
+  dbms_output.put_line('Hello '||lv_input);
 
 
 EXCEPTION

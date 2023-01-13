@@ -4,6 +4,7 @@ Author: Alice Smith
 Date: 09-JAN-2023
 */
 
+SPOOL lab02-01_testCase.txt
 /* Drop the types from most to least dependent. */
 DROP TYPE table_list;
 DROP TYPE table_struct;
@@ -99,3 +100,5 @@ SELECT table_name
 ,      column_cnt
 ,      row_cnt
 FROM   TABLE(listing);
+
+SPOOL OFF
