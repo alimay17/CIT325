@@ -4,18 +4,12 @@
    Date:   09-JAN-2023
 */
 
--- Put code that you call from other scripts here because they may create
--- their own log files. For example, you call other program scripts by
--- putting an "@" symbol before the name of a relative file name or a
--- fully qualified file name.
-
-
--- Open your log file and make sure the extension is ".txt".
+-- Open log file 
 -- ------------------------------------------------------------
 -- Remove any spool filename and spool off command when you call
 -- the script from a shell script.
 -- ------------------------------------------------------------
-SPOOL apply_plsql_lab2-2.txt
+-- SPOOL apply_plsql_lab2-2.txt
 
 -- Add an environment command to allow PL/SQL to print to console.
 SET SERVEROUTPUT ON SIZE UNLIMITED
@@ -23,40 +17,27 @@ SET VERIFY OFF
 
 -- Put your code here, like this "Hello Whom!" program.
 
+-- MAIN
 DECLARE
   lv_raw_input VARCHAR2(255);
-  lv_input CHAR(10);
+  lv_input VARCHAR2(255);
 
 BEGIN
   
-  lv_raw_input := &1;
+  lv_raw_input := '&1';
 
-  IF NLV(lv_raw_input.COUNT > 10) THEN
+  IF LENGTH(lv_raw_input) > 10 THEN
     lv_input := SUBSTR(lv_raw_input, 1, 10);
-  ELSE IF NVL(lv_raw_input.count < 10) THEN
+  ELSIF LENGTH(lv_raw_input) <=10 THEN
     lv_input := lv_raw_input;
   ELSE 
-    lv_input := 'World!' 
-  
-
-  dbms_output.put_line('Hello '||lv_input);
-
-
-EXCEPTION
-  WHEN OTHERS THEN
-    dbms_output.put_line('Exception ['||SQLERRM||']');
+    lv_input := 'World!'; 
+  END IF;
+   dbms_output.put_line('Hello '||lv_input);
 END;
 /
 
--- Close your log file.
--- ------------------------------------------------------------
--- Remove any spool filename and spool off command when you call
--- the script from a shell script.
--- ------------------------------------------------------------
-SPOOL OFF
+-- Close log file.
+-- SPOOL OFF
 
--- Instruct the program to exit SQL*Plus, which you need when you call a
--- a program from the command line. Please make sure you comment the
--- following command when you want to remain inside the interactive
--- SQL*Plus connection.
 -- QUIT;
