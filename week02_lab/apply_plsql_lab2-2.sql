@@ -40,4 +40,4 @@ END;
 -- Close log file.
 -- SPOOL OFF
 
--- QUIT;
+QUIT;
