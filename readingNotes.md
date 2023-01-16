@@ -1,7 +1,13 @@
-# CIT 325 - Week 02 Reading Notes
+# CIT 325 - Reading Notes
 *Winter 2023*  
 *Prof. Hinkley*  
 *Alice Smith*
+
+## Term Definitions
+- Subroutine = Functions
+- Function = are something like classes but also regular functions. Very confusing.
+- Blocks = programs or modules
+
 
 ## Block Structure
 - Extends ADA
@@ -16,6 +22,10 @@
   - Exception
 - Minimum of one statement in a block (can be blank)
 ### Syntax
+- DECLARE / HEADER - declaration section
+- BEGIN - execution section
+- EXCEPTION - exception section
+- END; / - Ends the block
 All declarations, statements and blocks must end with `;`  
 Never make dynamic assignments in a declaration block. Always in the Execution block so the exception can catch it.  
   
@@ -60,3 +70,5 @@ Only use local named blocks if there is no chance that something else will need 
 - ATD Table = Abstract Data Type table of build in data types
 - UDT Collection = User Defined Types (OBJECTS) Table of Objects
 - varray = Variable array. Or array of variables. (not super helpful. Lots of issues. Avoid.)
+- 
+- 
