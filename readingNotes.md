@@ -70,5 +70,15 @@ Only use local named blocks if there is no chance that something else will need 
 - ATD Table = Abstract Data Type table of build in data types
 - UDT Collection = User Defined Types (OBJECTS) Table of Objects
 - varray = Variable array. Or array of variables. (not super helpful. Lots of issues. Avoid.)
-- 
-- 
+
+ 
+## Variable Types
+- Uses all Oracle data types
+- BOOLEAN: TRUE, FALSE, NULL
+- CHAR: fixed-length string. Default is sized in bytes
+- VARCHAR2: variable-length string. Default is sized in bytes. Must have a max-length defined at declaration.
+  - STRING and VARCHAR are subtype aliases of VARCHAR2 
+- Subtypes
+  - constrained - restricts base type in some way
+  - unconstrained - alias for base type. Float is an example of an unconstrained subtype for type NUMBER.
+- Implicit loss of precision conversion
