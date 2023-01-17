@@ -12,6 +12,7 @@
 -- Open log file.
 SPOOL apply_plsql_lab3.txt
 
+SET SERVEROUTPUT ON SIZE UNLIMITED
 -- Enter your solution here.
 DECLARE
   TYPE list IS TABLE OF VARCHAR2(100);
@@ -19,21 +20,19 @@ DECLARE
     xnum NUMBER,
     xdate DATE,
     xstring VARCHAR2(30)
-  );
+ );
 
   lv_strings LIST;
   lv_three_type THREE_TYPE;
 
 BEGIN
   -- get input
-  lv_strings(1) := '&1';
-  lv_strings(2) := '&2';
-  lv_strings(3) := '&3';
+  lv_strings := list('&1','&2', '&3');
   
-
   -- sort and assign input
   FOR i IN 1..lv_strings.COUNT LOOP
-    dbms_output.put_line(lv_strings(i));
+    IF lv_strings(i)  
+  
   -- display
   END LOOP;
 
@@ -43,4 +42,4 @@ END;
 -- Close log file.
 SPOOL OFF
 
-QUIT
+-- QUIT
