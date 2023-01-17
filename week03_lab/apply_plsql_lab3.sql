@@ -5,14 +5,10 @@
 ||  Purpose:       Complete 325 Chapter 4 lab.
 */
 
--- Call seeding libraries.
-/* @$LIB/cleanup_oracle.sql
-@$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql */
-
 -- Open log file.
 SPOOL apply_plsql_lab3.txt
-
 SET SERVEROUTPUT ON SIZE UNLIMITED
+
 -- Enter your solution here.
 DECLARE
   TYPE list IS TABLE OF VARCHAR2(100);
@@ -22,19 +18,30 @@ DECLARE
     xstring VARCHAR2(30)
  );
 
-  lv_strings LIST;
+  lv_input LIST;
   lv_three_type THREE_TYPE;
 
 BEGIN
   -- get input
-  lv_strings := list('&1','&2', '&3');
+  lv_input := list('&1','&2', '&3');
   
   -- sort and assign input
-  FOR i IN 1..lv_strings.COUNT LOOP
-    IF lv_strings(i)  
-  
-  -- display
+  FOR i IN 1..lv_input.COUNT LOOP
+    -- NUMBER
+    IF REGEXP_LIKE(lv_input(i), '^[[:digit:]]*$') THEN
+      lv_three_type.xnum := lv_input(i);
+
+    -- string
+    ELSIF REGEXP_LIKE(lv_input(i),'^[[:alnum:]]*$') THEN
+      lv_three_type.xstring := lv_input(i);
+
+    -- date
+    ELSIF  verify_date(lv_input(i)) THEN
+      lv_three_type.xdate := lv_input(i);
+    END IF;
   END LOOP;
+
+  dbms_output.put_line(lv_three_type);
 
 END;
 /
