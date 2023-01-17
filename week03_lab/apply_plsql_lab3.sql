@@ -1,12 +1,12 @@
 /*
 ||  Name:          apply_plsql_lab3.sql
 ||  Date:          01 Jan 2023
-||  Author:	       Alice Smith
+||  Author:	   Alice Smith
 ||  Purpose:       Complete 325 Chapter 4 lab.
 */
 
 -- Open log file.
-SPOOL apply_plsql_lab3.txt
+-- SPOOL apply_plsql_lab3.txt
 SET SERVEROUTPUT ON SIZE UNLIMITED
 
 -- Enter your solution here.
@@ -27,7 +27,7 @@ BEGIN
   
   -- sort and assign input
   FOR i IN 1..lv_input.COUNT LOOP
-    -- NUMBER
+    -- number
     IF REGEXP_LIKE(lv_input(i), '^[[:digit:]]*$') THEN
       lv_three_type.xnum := lv_input(i);
 
@@ -36,17 +36,18 @@ BEGIN
       lv_three_type.xstring := lv_input(i);
 
     -- date
-    ELSIF  verify_date(lv_input(i)) THEN
+    ELSIF  verify_date(lv_input(i)) IS NOT NULL THEN
       lv_three_type.xdate := lv_input(i);
     END IF;
   END LOOP;
 
-  dbms_output.put_line(lv_three_type);
+  dbms_output.put_line('Record ['||lv_three_type.xnum||']'||'['||lv_three_type.xstring||']'||'['||lv_three_type.xdate||']');
 
 END;
 /
 
 -- Close log file.
-SPOOL OFF
+--SPOOL OFF
 
--- QUIT
+-- enable when running through bash script
+QUIT
