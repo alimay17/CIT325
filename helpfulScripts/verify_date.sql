@@ -27,21 +27,20 @@ BEGIN
           IF TO_NUMBER(SUBSTR(pv_date_in,1,2)) BETWEEN 1 AND 28 THEN
             lv_date := pv_date_in;
           ELSE
-            /* lv_date =: SYSDATE; */
             lv_date := NULL;
           END IF;
         END IF;
       ELSE
         /* Assign a default date. */
-        /* lv_date := SYSDATE; */
-        lv_date =: NULL;
+        lv_date := NULL;
     END CASE;
   ELSE
     /* Assign a default date. */
-    /* lv_date := SYSDATE; */
-    lv_date =: NULL;
+    lv_date := NULL;
   END IF;
   /* Return date. */
   RETURN lv_date;
 END;
 /
+
+

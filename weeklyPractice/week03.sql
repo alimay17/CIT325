@@ -27,7 +27,8 @@ DECLARE
 BEGIN
   FOR i IN 1..lv_strings.COUNT LOOP
     IF REGEXP_LIKE(lv_strings(i), '^[[:digit:]]*$') OR
-       REGEXP_LIKE(lv_strings(i),'^[0-9]{2,2}-[[:alpha:]]{3,3}-([0-9]{2,2}|[0-9]{4,4})$') OR
+       VERIFY_DATE(lv_strings(i)) OR
+     --  REGEXP_LIKE(lv_strings(i),'^[0-9]{2,2}-[[:alpha:]]{3,3}-([0-9]{2,2}|[0-9]{4,4})$') OR
        REGEXP_LIKE(lv_strings(i),'^[[:alnum:]]*$') THEN
     	
       dbms_output.put_line('Print Number ['||lv_strings(i)||']');
