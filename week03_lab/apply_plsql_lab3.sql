@@ -1,6 +1,7 @@
 /*
 ||  Name:          apply_plsql_lab3.sql
 ||  Date:          11 Nov 2016
+||  Author:	   Alice Smith
 ||  Purpose:       Complete 325 Chapter 4 lab.
 */
 
