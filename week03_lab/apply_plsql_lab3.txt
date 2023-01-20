@@ -2,8 +2,6 @@ Log: apply_plsql_lab3.txt
 ==================================================
 Test Case: Valid number, string, null             
 --------------------------------------------------
-old 14: lv_input := list('&1','&2', '&3');
-new 14: lv_input := list('38','catch22', '');
 Record [38][catch22][]
 
 PL/SQL procedure successfully completed.
@@ -11,8 +9,6 @@ PL/SQL procedure successfully completed.
 ==================================================
 Test Case: Valid number, string, and date         
 --------------------------------------------------
-old 14: lv_input := list('&1','&2', '&3');
-new 14: lv_input := list('41','aerodromes', '13-OCT-1307');
 Record [41][aerodromes][13-OCT-07]
 
 PL/SQL procedure successfully completed.
@@ -20,8 +16,6 @@ PL/SQL procedure successfully completed.
 ==================================================
 Test Case: Valid number, string, and invalid date 
 --------------------------------------------------
-old 14: lv_input := list('&1','&2', '&3');
-new 14: lv_input := list('31-APR-2017','dagger', '81');
 Record [81][dagger][]
 
 PL/SQL procedure successfully completed.
