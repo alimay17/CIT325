@@ -5,9 +5,15 @@
 ||  Purpose:       Complete 325 Chapter 4 lab.
 */
 
+<<<<<<< HEAD
 -- Open log file.
 -- SPOOL apply_plsql_lab3.txt
+=======
+-- Open log file & verify setting
+SPOOL apply_plsql_lab3.txt
+>>>>>>> ef4e9772b2ff54928dcd89057c58b76d6883094f
 SET SERVEROUTPUT ON SIZE UNLIMITED
+SET VERIFY OFF
 
 -- Enter your solution here.
 DECLARE
