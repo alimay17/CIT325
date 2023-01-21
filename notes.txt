@@ -1,16 +1,2 @@
-Getting the SQL Developer application to run
 
-Clicking on the desktop icon doesn't work for me. There is an issue with it knowing where the Java installation is and the way the shortcut is configured. The easiest way I have found to open it is through konsole.
-
-To open it for the first time I opened the konsole and typed: sqldeveloper
-
-Hit enter and it will prompt you to enter a full pathname of a JDK that will then be saved so you don't have to type it every time.
-
-The path name I used is: /usr/lib/jvm/java/
-
-Type this at the prompt, hit enter, and SQL developer will open. 
-
-From then on you simply have to type sqldeveloper into the prompt and hit enter to open the application.
-
-At this point you will encounter an error about javaFX. This is to initialize the welcome screen. The Fedora image is running openjdk which as far as I am aware doesn't support javaFX. The research I've done so far indicates that javaFX isn't required for SQL developer to run.
 
