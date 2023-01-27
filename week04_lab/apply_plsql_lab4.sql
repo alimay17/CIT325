@@ -6,7 +6,7 @@
 */
 
 -- Open log file.
-SPOOL log/apply_plsql_lab4.txt
+SPOOL apply_plsql_lab4.txt
 
 -- display settings
 SET SERVEROUTPUT ON SIZE UNLIMITED
@@ -18,7 +18,7 @@ DECLARE
 BEGIN
   dbms_output.put_line('hello World');
 END;
-
+/
 -- Close log file.
 SPOOL OFF
 
