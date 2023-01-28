@@ -13,7 +13,7 @@ SET SERVEROUTPUT ON SIZE UNLIMITED
 SET VERIFY OFF
 SET FEEDBACK OFF
 
--- create gift object
+-- create gift object type
 CREATE OR REPLACE TYPE gift IS OBJECT(
   day_name VARCHAR2(8),
   gift_name VARCHAR2(24)
