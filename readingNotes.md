@@ -82,3 +82,8 @@ Only use local named blocks if there is no chance that something else will need 
   - constrained - restricts base type in some way
   - unconstrained - alias for base type. Float is an example of an unconstrained subtype for type NUMBER.
 - Implicit loss of precision conversion
+
+# Chapter 6 - Data Collections
+-  Scalar = single build in values
+- Object = User defined data type. 
+A list of object data types is a collection of object. An object is a user defined data type 
