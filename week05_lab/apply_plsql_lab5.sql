@@ -1,6 +1,6 @@
 /*
 ||  Name:          apply_plsql_lab5.sql
-||  Date:          11 Nov 2016
+||  Date:          04 Feb 2023
 ||  Purpose:       Complete 325 Chapter 5 lab.
 ||  Author:        Alice Smith
 */
@@ -78,10 +78,10 @@ CREATE OR REPLACE
   TYPE rating_agency_tab IS TABLE OF rating_agency_obj;
 /
 
-/**************************************************
-  Read data from one table into local collection 
-  to update another table
-**************************************************/
+/*
+||  Read data from one table into local collection 
+||  to update another table
+*/
 DECLARE
   /* rating_agency cursor */
   CURSOR rating_agency_cur IS
