@@ -1,12 +1,14 @@
 /*
-||  Name:          apply_plsql_lab4.sql
+||  Name:          apply_plsql_lab5.sql
 ||  Date:          11 Nov 2016
 ||  Purpose:       Complete 325 Chapter 5 lab.
 */
 
 -- Call seeding libraries.
+/*
 @$LIB/cleanup_oracle.sql
 @$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
+*/
 
 -- Open log file.
 SPOOL apply_plsql_lab5.txt
@@ -34,8 +36,7 @@ FROM (
 ) il;
 
 /* alter item table to add rating_agency_id */
-ALTER TABLE item
-  ADD rating_agency_id NUMBER;
+ALTER TABLE item ADD rating_agency_id NUMBER;
 
 /* validate item table */
 SET NULL ''
@@ -113,6 +114,16 @@ BEGIN
   COMMIT; 
 END;
 /
+
+
+/* validate results */
+SELECT   
+  rating_agency_id,
+  COUNT(*)
+FROM item
+WHERE rating_agency_id IS NOT NULL
+GROUP BY rating_agency_id
+ORDER BY 1;
 
 -- Close log file.
 SPOOL OFF
