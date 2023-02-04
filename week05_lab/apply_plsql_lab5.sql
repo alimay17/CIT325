@@ -2,18 +2,17 @@
 ||  Name:          apply_plsql_lab5.sql
 ||  Date:          11 Nov 2016
 ||  Purpose:       Complete 325 Chapter 5 lab.
+||  Author:        Alice Smith
 */
 
 -- Call seeding libraries.
-/*
 @$LIB/cleanup_oracle.sql
 @$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
-*/
 
 -- Open log file.
 SPOOL apply_plsql_lab5.txt
 
-/* new rating_agency_s sequence */
+-- new rating_agency_s sequence
 DROP sequence rating_agency_s;
 CREATE sequence rating_agency_s
   START WITH 1001
@@ -21,7 +20,7 @@ CREATE sequence rating_agency_s
   INCREMENT BY 1
 ORDER;
 
-/* new rating_agency table */
+-- new rating_agency table
 DROP TABLE rating_agency;
 CREATE TABLE rating_agency AS
 SELECT 
@@ -35,10 +34,10 @@ FROM (
   FROM   item i
 ) il;
 
-/* alter item table to add rating_agency_id */
-ALTER TABLE item ADD rating_agency_id NUMBER;
+-- alter item table to add rating_agency_id 
+ALTER TABLE item ADD rating_agency_id NUMBER(22);
 
-/* validate item table */
+-- validate item table
 SET NULL ''
 COLUMN table_name   FORMAT A18
 COLUMN column_id    FORMAT 9999
@@ -101,7 +100,6 @@ BEGIN
         i.rating,
         i.rating_agency
       );
-    
   END LOOP;
 
   /* update item table from local collection */
@@ -114,7 +112,6 @@ BEGIN
   COMMIT; 
 END;
 /
-
 
 /* validate results */
 SELECT   
