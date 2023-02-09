@@ -1,4 +1,4 @@
-CREATE PROCEDURE insert_item
+CREATE OR REPLACE PROCEDURE insert_item
 ( pv_item_barcode        VARCHAR2
 , pv_item_type           VARCHAR2
 , pv_item_title          VARCHAR2
