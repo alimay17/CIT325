@@ -1,0 +1,7 @@
+
+SYSTEM_USER_ID SYSTEM_USER_NAME                                                 
+-------------- --------------------                                             
+             2 DBA 1                                                            
+             3 DBA 2                                                            
+             4 DBA 3                                                            
+             5 DBA 4                                                            
