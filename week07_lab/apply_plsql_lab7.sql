@@ -46,7 +46,7 @@ CREATE OR REPLACE PROCEDURE insert_contact(
   pv_telephone_number   VARCHAR2,
   pv_telephone_type     VARCHAR2,
   pv_user_name          VARCHAR2 */
-  pv_address_type       VARCHAR2,
+  pv_address_type       VARCHAR2
 ) IS
 
   -- common_lookup local variables
