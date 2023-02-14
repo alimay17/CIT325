@@ -96,7 +96,7 @@ BEGIN
     pv_address_type
   ); */
   SELECT system_user_id INTO lv_sys_user_id
-    FROM system_user_table
+    FROM system_user
     WHERE system_user_name = pv_user_name;
 
   dbms_output.put_line(lv_sys_user_id || ' this is the userID');
