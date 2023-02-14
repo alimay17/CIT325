@@ -40,23 +40,23 @@ CREATE OR REPLACE PROCEDURE insert_contact(
   pv_city               VARCHAR2,
   pv_state_province     VARCHAR2,
   pv_postal_code        VARCHAR2,
-  
+  pv_address_type       VARCHAR2,
   pv_country_code       VARCHAR2,
   pv_area_code          VARCHAR2,
   pv_telephone_number   VARCHAR2,
-  pv_telephone_type     VARCHAR2,
-  pv_user_name          VARCHAR2 */
-  pv_address_type       VARCHAR2
+  pv_telephone_type     VARCHAR2,*/
+  pv_user_name          VARCHAR2
 ) IS
 
-  -- common_lookup local variables
-  lv_address_id        VARCHAR2(30);
-  /* lv_contact_type        VARCHAR2(30);
-  lv_credit_card_type    VARCHAR2(30);
-  lv_member_type         VARCHAR2(30);
-  lv_telephone_type      VARCHAR2(30); */
+  -- local variables
+  lv_address_id     VARCHAR2(30);
+  lv_contact_id     VARCHAR2(30);
+  lv_credit_card_id VARCHAR2(30);
+  lv_member_id      VARCHAR2(30);
+  lv_telephone_id   VARCHAR2(30);
+  lv_sys_user_id    VARCHAR2(30);
 
-  -- get lookup_id
+  -- get_lookup_id function
   FUNCTION get_lookup_id(
     pv_table_name  VARCHAR2,
     pv_column_name VARCHAR2,
@@ -90,19 +90,22 @@ CREATE OR REPLACE PROCEDURE insert_contact(
 
 -- begin main function insert_contact
 BEGIN
-  lv_address_id := get_lookup_id(
+  /* lv_address_id := get_lookup_id(
     'ADDRESS',
     'ADDRESS_TYPE',
     pv_address_type
-  );
+  ); */
+  SELECT system_user_id INTO lv_sys_user_id
+    FROM system_user_table
+    WHERE system_user_name = pv_user_name;
 
-  dbms_output.put_line(lv_address_id || ' this is the address id');
+  dbms_output.put_line(lv_sys_user_id || ' this is the userID');
 
 END;
 /
 
 BEGIN
-  insert_contact('HOME');
+  insert_contact('DBA 2');
 END;
 /
 
