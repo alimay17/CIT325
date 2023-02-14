@@ -53,8 +53,8 @@ CREATE OR REPLACE PROCEDURE insert_contact(
   lv_contact_id     VARCHAR2(30);
   lv_credit_card_id VARCHAR2(30);
   lv_member_id      VARCHAR2(30);
-  lv_telephone_id   VARCHAR2(30);
-  lv_sys_user_id    VARCHAR2(30); */
+  lv_telephone_id   VARCHAR2(30); */
+  lv_sys_user_id    VARCHAR2(30);
   lv_time_stamp     DATE;
 
   -- get_lookup_id function
