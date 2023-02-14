@@ -29,7 +29,7 @@ END;
 || Part 1 - All or nothing insert_contact procedure 
 */
 CREATE OR REPLACE PROCEDURE insert_contact(
-  pv_first_name         VARCHAR2,
+  /* pv_first_name         VARCHAR2,
   pv_middle_name        VARCHAR2,
   pv_last_name          VARCHAR2,
   pv_contact_type       VARCHAR2,
@@ -40,23 +40,69 @@ CREATE OR REPLACE PROCEDURE insert_contact(
   pv_city               VARCHAR2,
   pv_state_province     VARCHAR2,
   pv_postal_code        VARCHAR2,
-  pv_address_type       VARCHAR2,
+  
   pv_country_code       VARCHAR2,
   pv_area_code          VARCHAR2,
   pv_telephone_number   VARCHAR2,
   pv_telephone_type     VARCHAR2,
-  pv_user_name          VARCHAR2
+  pv_user_name          VARCHAR2 */
+  pv_address_type       VARCHAR2,
 ) IS
 
+  -- common_lookup local variables
+  lv_address_id        VARCHAR2(30);
+  /* lv_contact_type        VARCHAR2(30);
+  lv_credit_card_type    VARCHAR2(30);
+  lv_member_type         VARCHAR2(30);
+  lv_telephone_type      VARCHAR2(30); */
+
+  -- get lookup_id
+  FUNCTION get_lookup_id(
+    pv_table_name  VARCHAR2,
+    pv_column_name VARCHAR2,
+    pv_lookup_type VARCHAR2
+  ) RETURN NUMBER IS
+    lv_return NUMBER := 0;
+
+  -- cursor
+  CURSOR find_common_lookup_id(
+    cv_table_name  VARCHAR2,
+    cv_column_name VARCHAR2,
+    cv_lookup_type VARCHAR2
+  ) IS
+    SELECT common_lookup_id
+    FROM common_lookup WHERE
+      common_lookup_table = cv_table_name   AND
+      common_lookup_column = cv_column_name AND
+      common_lookup_type = cv_lookup_type;
+  
+  -- begin get_lookup id
+  BEGIN
+    for i in find_common_lookup_id(
+      pv_table_name, 
+      pv_column_name,
+      pv_lookup_type
+    ) LOOP
+      lv_return := i.common_lookup_id;
+    END LOOP;
+    RETURN lv_return;
+  END get_lookup_id;
+
+-- begin main function insert_contact
 BEGIN
-/*
-  lv_address_type := pv_address_type;
-  lv_contact_type := pv_contact_type;
-  lv_credit_card_type := pv_credit_card_type;
-  lv_member_type := pv_member_type;
-  lv_telephone_type := pv_telephone_type;
-*/
-  NULl;
+  lv_address_id := get_lookup_id(
+    'ADDRESS',
+    'ADDRESS_TYPE',
+    pv_address_type
+  );
+
+  dbms_output.put_line(lv_address_id || ' this is the address id');
+
+END;
+/
+
+BEGIN
+  insert_contact('HOME');
 END;
 /
 
