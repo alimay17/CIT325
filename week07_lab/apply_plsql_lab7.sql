@@ -49,12 +49,13 @@ CREATE OR REPLACE PROCEDURE insert_contact(
 ) IS
 
   -- local variables
-  lv_address_id     VARCHAR2(30);
+  /* lv_address_id     VARCHAR2(30);
   lv_contact_id     VARCHAR2(30);
   lv_credit_card_id VARCHAR2(30);
   lv_member_id      VARCHAR2(30);
   lv_telephone_id   VARCHAR2(30);
-  lv_sys_user_id    VARCHAR2(30);
+  lv_sys_user_id    VARCHAR2(30); */
+  lv_time_stamp     DATE;
 
   -- get_lookup_id function
   FUNCTION get_lookup_id(
@@ -95,15 +96,45 @@ BEGIN
     'ADDRESS_TYPE',
     pv_address_type
   ); */
+
   SELECT system_user_id INTO lv_sys_user_id
     FROM system_user
     WHERE system_user_name = pv_user_name;
 
-  dbms_output.put_line(lv_sys_user_id || ' this is the userID');
+  SELECT SYSDATE INTO lv_time_stamp FROM DUAL;
+
+  SAVEPOINT starting_point;
+ 
+  /* INSERT INTO member (
+    member_id,
+    member_type,
+    account_number,
+    credit_card_number,
+    credit_card_type,
+    created_by,
+    last_updated_by,
+    last_update_date
+  ) VALUES (
+    member_s1.NEXTVAL,
+    lv_member_id,
+    pv_account_number,
+    pv_credit_card_number,
+    lv_credit_card_id,
+    lv_sys_user_id,
+    lv_time_stamp,
+    lv_sys_user_id,
+    lv_time_stamp
+  ); */
+
+  dbms_output.put_line(lv_time_stamp || ' this is the timeStamp');
 
 END;
 /
 
+/*
+|| Part 1
+|| TEST BLOCk 
+*/
 BEGIN
   insert_contact('DBA 2');
 END;
