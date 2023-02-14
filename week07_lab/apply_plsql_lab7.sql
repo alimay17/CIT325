@@ -27,16 +27,39 @@ END;
 /
 /*
 || Part 1 - All or nothing insert_contact procedure 
-
+*/
 CREATE OR REPLACE PROCEDURE insert_contact(
-  pv_first_name VARCHAR2
+  pv_first_name         VARCHAR2,
+  pv_middle_name        VARCHAR2,
+  pv_last_name          VARCHAR2,
+  pv_contact_type       VARCHAR2,
+  pv_account_number     VARCHAR2,
+  pv_member_type        VARCHAR2,
+  pv_credit_card_number VARCHAR2,
+  pv_credit_card_type   VARCHAR2,
+  pv_city               VARCHAR2,
+  pv_state_province     VARCHAR2,
+  pv_postal_code        VARCHAR2,
+  pv_address_type       VARCHAR2,
+  pv_country_code       VARCHAR2,
+  pv_area_code          VARCHAR2,
+  pv_telephone_number   VARCHAR2,
+  pv_telephone_type     VARCHAR2,
+  pv_user_name          VARCHAR2
 ) IS
 
 BEGIN
-  dbms_output.put_line('this is procedure 1');
+
+  lv_address_type := pv_address_type;
+  lv_contact_type := pv_contact_type;
+  lv_credit_card_type := pv_credit_card_type;
+  lv_member_type := pv_member_type;
+  lv_telephone_type := pv_telephone_type;
+
+  -- dbms_output.put_line('this is procedure 1');
 END;
 /
-*/
+
 /*
 || Part 2 - Convert insert_contact procedure from definer to invoker rights 
 
@@ -52,7 +75,7 @@ END;
 /*
 || Part 3 - Convert insert_contact procedure from invoker to autonomous definer rights function
 || returns NUMBER 1 if success, 0 if not
-*/
+
 -- Drop procedure to run function
 -- DROP PROCEDURE insert_contact;
 CREATE OR REPLACE FUNCTION insert_contact(
