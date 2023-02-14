@@ -169,23 +169,11 @@ BEGIN
     lv_time_stamp
   );
 
-  -- street_address
-  INSERT INTO street_address VALUES(
-    street_address_s1.NEXTVAL,
-    address_s1.CURRVAL,
-    1,
-    pv_street_address,
-    lv_created_by,
-    lv_time_stamp,
-    lv_created_by,
-    lv_time_stamp
-  );
-
   -- telephone
   INSERT INTO telephone VALUES (
     telephone_s1.NEXTVAL,
     contact_s1.CURRVAL,
-    address_s1.CURRVAL
+    address_s1.CURRVAL,
     lv_telephone_id_type,
     pv_country_code,
     pv_area_code,
@@ -198,10 +186,10 @@ BEGIN
 
   COMMIT;
 
--- EXCEPTION 
---   WHEN OTHERS THEN
---     ROLLBACK TO starting_point;
--- RETURN;
+ EXCEPTION 
+   WHEN OTHERS THEN
+     ROLLBACK TO starting_point;
+ RETURN;
 
 END insert_contact;
 /
@@ -224,6 +212,7 @@ BEGIN
     'DISCOVER_CARD',
     'Milbridge',
     'Maine',
+    '04658',
     'HOME',
     '001',
     '207',
