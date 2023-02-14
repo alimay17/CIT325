@@ -49,14 +49,14 @@ CREATE OR REPLACE PROCEDURE insert_contact(
 ) IS
 
 BEGIN
-
+/*
   lv_address_type := pv_address_type;
   lv_contact_type := pv_contact_type;
   lv_credit_card_type := pv_credit_card_type;
   lv_member_type := pv_member_type;
   lv_telephone_type := pv_telephone_type;
-
-  -- dbms_output.put_line('this is procedure 1');
+*/
+  NULl;
 END;
 /
 
@@ -103,7 +103,7 @@ END;
 */
 /*
 || testing
-*/
+
 DECLARE
   lv_num NUMBER;
 BEGIN
@@ -112,5 +112,6 @@ BEGIN
   dbms_output.put_line(lv_num);
 END;
 /
+*/
 -- Close log file.
 SPOOL OFF
