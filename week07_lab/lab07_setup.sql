@@ -5,12 +5,12 @@
 ||  Purpose:       fix lab 8 system_user table error.
 */
 
--- Call seeding libraries.
+-- -- Call seeding libraries.
 -- @$LIB/cleanup_oracle.sql
 -- @$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
 
 -- Open log file.
-SPOOL lab07_setup.txt
+SPOOL 'logs/lab07_setup.txt'
 
 -- display settings
 SET SERVEROUTPUT ON SIZE UNLIMITED
