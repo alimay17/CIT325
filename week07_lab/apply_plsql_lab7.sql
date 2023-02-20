@@ -6,8 +6,8 @@
 */
 
 -- Call seeding libraries
-@$LIB/cleanup_oracle.sql
-@$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
+-- @$LIB/cleanup_oracle.sql
+-- @$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
 
 /* open log file */
 SPOOL apply_plsql_lab7.txt
@@ -26,12 +26,12 @@ DECLARE
 
 BEGIN
   --  Update system_user names to unique values
-  FOR i IN 1..lv_numbers.COUNT LOOP
-    UPDATE system_user
-    SET    system_user_name = system_user_name || ' ' || lv_numbers(i)
-    WHERE  system_user_id = lv_counter;
-    lv_counter := lv_counter + 1;
-  END LOOP;
+  -- FOR i IN 1..lv_numbers.COUNT LOOP
+  --   UPDATE system_user
+  --   SET    system_user_name = system_user_name || ' ' || lv_numbers(i)
+  --   WHERE  system_user_id = lv_counter;
+  --   lv_counter := lv_counter + 1;
+  -- END LOOP;
 
   -- remove anything with insert_contact name
   FOR i IN (
@@ -47,7 +47,7 @@ END;
 
 /*
 || Part 1 - initial insert_contact procedure
-*/
+
 CREATE OR REPLACE PROCEDURE insert_contact(
   pv_first_name         VARCHAR2,
   pv_middle_name        VARCHAR2,
@@ -221,9 +221,10 @@ END INSERT_CONTACT;
 -- END insert_contact
 
 /*
-|| Part 1 TEST BLOCK
+|| Part 1 test - create new contact
 
 BEGIN
+  -- test insert of new contact
   insert_contact(
     'Charles',
     'Francis',
@@ -243,7 +244,8 @@ BEGIN
     'HOME',
     'DBA 2'
   );
-END; -- test block
+END; 
+-- END test block
 /
 
 -- test query
@@ -267,13 +269,12 @@ ON     c.contact_id = t.contact_id
 AND    a.address_id = t.address_id
 WHERE  c.last_name = 'Xavier';
 
-|||||||||||||| END PART 1 |||||||||||||||||||||||*/
+/*|||||||||||||| END PART 1 |||||||||||||||||||||||*/
 
 
 /*
-|| Part 2 - Convert insert_contact procedure from definer to invoker rights.
-|| use autonomous transaction
-
+|| Part 2 - Convert insert_contact procedure from definer to invoker rights
+|| and use autonomous transaction
 
 CREATE OR REPLACE PROCEDURE insert_contact(
   pv_first_name         VARCHAR2,
@@ -310,20 +311,22 @@ CREATE OR REPLACE PROCEDURE insert_contact(
     pv_column_name VARCHAR2,
     pv_lookup_type VARCHAR2
   ) RETURN NUMBER IS
+
+    -- variables
     lv_return NUMBER := 0;
 
-  -- dynamic CURSOR
-  CURSOR find_common_lookup_id(
-    cv_table_name  VARCHAR2,
-    cv_column_name VARCHAR2,
-    cv_lookup_type VARCHAR2
-  ) IS
-    SELECT common_lookup_id
-    FROM common_lookup WHERE
-      common_lookup_table = cv_table_name   AND
-      common_lookup_column = cv_column_name AND
-      common_lookup_type = cv_lookup_type;
-
+    -- dynamic CURSOR for lookup table values
+    CURSOR find_common_lookup_id(
+      cv_table_name  VARCHAR2,
+      cv_column_name VARCHAR2,
+      cv_lookup_type VARCHAR2
+    ) IS
+      SELECT common_lookup_id
+      FROM common_lookup WHERE
+        common_lookup_table = cv_table_name   AND
+        common_lookup_column = cv_column_name AND
+        common_lookup_type = cv_lookup_type;
+  
   -- begin get_lookup id
   BEGIN
     for i in find_common_lookup_id(
@@ -334,10 +337,12 @@ CREATE OR REPLACE PROCEDURE insert_contact(
       lv_return := i.common_lookup_id;
     END LOOP;
     RETURN lv_return;
-  END get_lookup_id;
+  END get_lookup_id; 
 
 -- set to autonomous transaction
 PRAGMA AUTONOMOUS_TRANSACTION;
+
+-- END function declaration block
 
 -- begin main function insert_contact
 BEGIN 
@@ -433,18 +438,21 @@ BEGIN
     lv_created_by,
     lv_time_stamp
   );
+
+  -- commit changes
   COMMIT;  
 
+  -- handle exceptions
   EXCEPTION 
     WHEN OTHERS THEN
       ROLLBACK TO starting_point;
+
 END INSERT_CONTACT;
 /
-
-SHOW ERRORS
+-- END insert_contact
 
 /*
-|| Part 2 TEST BLOCK
+|| Part 2 test - create new contact
 
 BEGIN
   insert_contact(
@@ -466,8 +474,9 @@ BEGIN
     'HOME',
     'DBA 2'
   );
-END; -- end test block
+END;
 /
+-- end test block
 
 -- test query
 COL full_name      FORMAT A24
@@ -490,12 +499,12 @@ ON     c.contact_id = t.contact_id
 AND    a.address_id = t.address_id
 WHERE  c.last_name = 'Haggerty';
 
-|||||||||||||| END PART 2 |||||||||||||||||||||||*/
+/*|||||||||||||| END PART 2 |||||||||||||||||||||||*/
 
 /*
-|| Part 3 - Convert insert_contact procedure from invoker to function
+|| Part 3 - Convert insert_contact procedure to invoker rights function
 || returns 1 if success, 0 if fail
-
+*/
 -- Drop procedure to run function
 -- DROP PROCEDURE insert_contact;
 
@@ -540,7 +549,7 @@ CREATE OR REPLACE FUNCTION insert_contact(
   ) RETURN NUMBER IS
 
     -- get_lookup_id default return value
-    lv_return NUMBER := 0;
+    lv_id_return NUMBER := 0;
 
   -- dynamic CURSOR
   CURSOR find_common_lookup_id(
@@ -561,10 +570,12 @@ CREATE OR REPLACE FUNCTION insert_contact(
       pv_column_name,
       pv_lookup_type
     ) LOOP
-      lv_return := i.common_lookup_id;
+      lv_id_return := i.common_lookup_id;
     END LOOP;
-    RETURN lv_return;
+    RETURN lv_id_return;
   END get_lookup_id;
+
+-- end function declaration
 
 -- begin main function insert_contact
 BEGIN 
@@ -661,25 +672,28 @@ BEGIN
     lv_created_by,
     lv_time_stamp
   );
+
+  -- commit changes and return success result
   COMMIT;
   lv_return_val := 1;
   RETURN lv_return_val;
 
-
+  -- handle exceptions and return fail result
   EXCEPTION 
     WHEN OTHERS THEN
       ROLLBACK TO starting_point;
     RETURN lv_return_val;
     
-END; -- end insert_contact
+END; 
 /
 
-SHOW ERRORS
+LIST
+show errors
+-- end insert_contact
 
 /*
-|| Part 3 TEST BLOCK
+|| Part 3 test - insert new contact and output success status
 */
-
 BEGIN
  IF insert_contact(
     'Harriet',
@@ -733,10 +747,9 @@ WHERE  c.last_name = 'McDonnell';
 /*
 || Part 4 - get_contact object table function using a contact_obj, contact_tab setup 
 || returns complete list of persons format: 'first, middle, last'
-*/
 
-/* create contact object */
-DROP TYPE contact_obj FORCE;
+
+/* create contact object 
 CREATE OR REPLACE 
   TYPE contact_obj IS OBJECT(
   first_name VARCHAR2(20),
@@ -745,12 +758,12 @@ CREATE OR REPLACE
 );
 /
 
-/* create table of contact_obj */
+/* create table of contact_obj 
 CREATE OR REPLACE
   TYPE contact_tab IS TABLE OF contact_obj;
 /
 
-/* contact_obj function */
+/* contact_obj function 
 CREATE OR REPLACE FUNCTION get_contact 
   RETURN CONTACT_TAB IS
   
@@ -782,7 +795,7 @@ END;
 
 /*
 || Part 4 test query
-*/
+
 SET PAGESIZE 999
 COL full_name FORMAT A24
 SELECT first_name || CASE
@@ -792,7 +805,7 @@ SELECT first_name || CASE
   END || last_name AS full_name
 FROM   TABLE(get_contact);
 
-/*|||||||||||||| END PART 3 |||||||||||||||||||||||*/
+|||||||||||||| END PART 3 |||||||||||||||||||||||*/
 
 -- Close log file.
 SPOOL OFF
