@@ -710,25 +710,65 @@ WHERE  c.last_name = 'McDonnell';
 || Part 4 - get_contact object table function using a contact_obj, contact_tab setup 
 || returns complete list of persons format: 'first, middle, last'
 */
-CREATE OR REPLACE FUNCTION get_contact (
-  pv_first_name VARCHAR2
-) RETURN CONTACT_TAB IS
-BEGIN
-  NULL;
-END;
-/
-*/
-/*
-|| testing
 
-DECLARE
-  lv_num NUMBER;
-BEGIN
---  insert_contact('firstName');
-  lv_num := insert_contact('firstName');
-  dbms_output.put_line(lv_num);
+/* create contact object */
+DROP TYPE contact_obj FORCE;
+CREATE OR REPLACE 
+  TYPE contact_obj IS OBJECT(
+  first_name VARCHAR2(20),
+  middle_name VARCHAR2(20),
+  last_name VARCHAR2(20)
+);
+/
+
+/* create table of contact_obj */
+CREATE OR REPLACE
+  TYPE contact_tab IS TABLE OF contact_obj;
+/
+
+/* contact_obj function */
+CREATE OR REPLACE FUNCTION get_contact 
+  RETURN CONTACT_TAB IS
+  
+  -- cursor
+  CURSOR contact_cur IS
+    SELECT first_name, middle_name, last_name
+    FROM contact;
+
+  -- variables
+  lv_count NUMBER;
+  lv_contact_tab CONTACT_TAB := contact_tab();  
+
+  BEGIN
+    -- read cursor into local table
+    lv_count := 1;
+    FOR i IN contact_cur LOOP
+      lv_contact_tab.EXTEND;
+      lv_contact_tab(lv_count) := contact_obj(
+      i.first_name,
+      i.middle_name,
+      i.last_name
+    );
+    lv_count := lv_count + 1;
+    END LOOP;
+
+  RETURN lv_contact_tab;
 END;
 /
+
+/*
+|| Part 4 test query
 */
+SET PAGESIZE 999
+COL full_name FORMAT A24
+SELECT first_name || CASE
+  WHEN middle_name IS NOT NULL
+    THEN ' ' || middle_name || ' '
+  ELSE ' '
+  END || last_name AS full_name
+FROM   TABLE(get_contact);
+
+/*|||||||||||||| END PART 3 |||||||||||||||||||||||*/
+
 -- Close log file.
 SPOOL OFF
