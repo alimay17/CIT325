@@ -5,16 +5,35 @@
 ||  Purpose:       Complete 325 Chapter 8 lab.
 */
 
--- Open log file.
+-- Call seeding libraries
+@$LIB/cleanup_oracle.sql
+@$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
+
+/* open log file */
 SPOOL apply_plsql_lab7.txt
 
--- environment settings
+/* environment settings */
 SET SERVEROUTPUT ON SIZE UNLIMITED
 SET VERIFY OFF
 SET FEEDBACK OFF
 
--- remove insert_contact
+/* Database setup */
+DECLARE
+  -- variables
+  lv_counter  NUMBER := 2;
+  TYPE numbers IS TABLE OF NUMBER;
+  lv_numbers  NUMBERS := numbers(1,2,3,4);
+
 BEGIN
+  --  Update system_user names to unique values
+  FOR i IN 1..lv_numbers.COUNT LOOP
+    UPDATE system_user
+    SET    system_user_name = system_user_name || ' ' || lv_numbers(i)
+    WHERE  system_user_id = lv_counter;
+    lv_counter := lv_counter + 1;
+  END LOOP;
+
+  -- remove anything with insert_contact name
   FOR i IN (
     SELECT 
      uo.object_type,
@@ -27,8 +46,8 @@ END;
 /
 
 /*
-|| Part 1 - All or nothing insert_contact procedure 
-
+|| Part 1 - initial insert_contact procedure
+*/
 CREATE OR REPLACE PROCEDURE insert_contact(
   pv_first_name         VARCHAR2,
   pv_middle_name        VARCHAR2,
@@ -64,19 +83,21 @@ CREATE OR REPLACE PROCEDURE insert_contact(
     pv_column_name VARCHAR2,
     pv_lookup_type VARCHAR2
   ) RETURN NUMBER IS
+
+    -- variables
     lv_return NUMBER := 0;
 
-  -- dynamic CURSOR
-  CURSOR find_common_lookup_id(
-    cv_table_name  VARCHAR2,
-    cv_column_name VARCHAR2,
-    cv_lookup_type VARCHAR2
-  ) IS
-    SELECT common_lookup_id
-    FROM common_lookup WHERE
-      common_lookup_table = cv_table_name   AND
-      common_lookup_column = cv_column_name AND
-      common_lookup_type = cv_lookup_type;
+    -- dynamic CURSOR for lookup table values
+    CURSOR find_common_lookup_id(
+      cv_table_name  VARCHAR2,
+      cv_column_name VARCHAR2,
+      cv_lookup_type VARCHAR2
+    ) IS
+      SELECT common_lookup_id
+      FROM common_lookup WHERE
+        common_lookup_table = cv_table_name   AND
+        common_lookup_column = cv_column_name AND
+        common_lookup_type = cv_lookup_type;
   
   -- begin get_lookup id
   BEGIN
@@ -88,7 +109,9 @@ CREATE OR REPLACE PROCEDURE insert_contact(
       lv_return := i.common_lookup_id;
     END LOOP;
     RETURN lv_return;
-  END get_lookup_id;
+  END get_lookup_id; 
+
+-- END function declaration
 
 -- begin main function insert_contact
 BEGIN 
@@ -185,16 +208,17 @@ BEGIN
     lv_time_stamp
   );
 
+  -- commit changes
   COMMIT;
 
+ -- handle exceptions
  EXCEPTION 
     WHEN OTHERS THEN
       ROLLBACK TO starting_point;
 
 END INSERT_CONTACT;
 /
-
-SHOW ERRORS
+-- END insert_contact
 
 /*
 || Part 1 TEST BLOCK
@@ -654,7 +678,7 @@ SHOW ERRORS
 
 /*
 || Part 3 TEST BLOCK
-
+*/
 
 BEGIN
  IF insert_contact(
@@ -704,7 +728,7 @@ ON     c.contact_id = t.contact_id
 AND    a.address_id = t.address_id
 WHERE  c.last_name = 'McDonnell';
 
-|||||||||||||| END PART 3 |||||||||||||||||||||||*/
+/*|||||||||||||| END PART 3 |||||||||||||||||||||||*/
 
 /*
 || Part 4 - get_contact object table function using a contact_obj, contact_tab setup 
