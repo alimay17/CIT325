@@ -6,8 +6,8 @@
 */
 
 -- Call seeding libraries
--- @$LIB/cleanup_oracle.sql
--- @$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
+@$LIB/cleanup_oracle.sql
+@$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
 
 /* open log file */
 SPOOL apply_plsql_lab7.txt
@@ -26,12 +26,12 @@ DECLARE
 
 BEGIN
   --  Update system_user names to unique values
-  -- FOR i IN 1..lv_numbers.COUNT LOOP
-  --   UPDATE system_user
-  --   SET    system_user_name = system_user_name || ' ' || lv_numbers(i)
-  --   WHERE  system_user_id = lv_counter;
-  --   lv_counter := lv_counter + 1;
-  -- END LOOP;
+  FOR i IN 1..lv_numbers.COUNT LOOP
+    UPDATE system_user
+    SET    system_user_name = system_user_name || ' ' || lv_numbers(i)
+    WHERE  system_user_id = lv_counter;
+    lv_counter := lv_counter + 1;
+  END LOOP;
 
   -- remove anything with insert_contact name
   FOR i IN (
@@ -47,7 +47,7 @@ END;
 
 /*
 || Part 1 - initial insert_contact procedure
-
+*/
 CREATE OR REPLACE PROCEDURE insert_contact(
   pv_first_name         VARCHAR2,
   pv_middle_name        VARCHAR2,
@@ -222,7 +222,7 @@ END INSERT_CONTACT;
 
 /*
 || Part 1 test - create new contact
-
+*/
 BEGIN
   -- test insert of new contact
   insert_contact(
@@ -275,7 +275,7 @@ WHERE  c.last_name = 'Xavier';
 /*
 || Part 2 - Convert insert_contact procedure from definer to invoker rights
 || and use autonomous transaction
-
+*/
 CREATE OR REPLACE PROCEDURE insert_contact(
   pv_first_name         VARCHAR2,
   pv_middle_name        VARCHAR2,
@@ -453,7 +453,7 @@ END INSERT_CONTACT;
 
 /*
 || Part 2 test - create new contact
-
+*/
 BEGIN
   insert_contact(
     'Maura',
@@ -506,7 +506,7 @@ WHERE  c.last_name = 'Haggerty';
 || returns 1 if success, 0 if fail
 */
 -- Drop procedure to run function
--- DROP PROCEDURE insert_contact;
+DROP PROCEDURE insert_contact;
 
 -- create function
 CREATE OR REPLACE FUNCTION insert_contact(
@@ -687,8 +687,6 @@ BEGIN
 END; 
 /
 
-LIST
-show errors
 -- end insert_contact
 
 /*
@@ -747,9 +745,9 @@ WHERE  c.last_name = 'McDonnell';
 /*
 || Part 4 - get_contact object table function using a contact_obj, contact_tab setup 
 || returns complete list of persons format: 'first, middle, last'
+*/
 
-
-/* create contact object 
+/* create contact object */
 CREATE OR REPLACE 
   TYPE contact_obj IS OBJECT(
   first_name VARCHAR2(20),
@@ -758,12 +756,12 @@ CREATE OR REPLACE
 );
 /
 
-/* create table of contact_obj 
+/* create table of contact_obj */
 CREATE OR REPLACE
   TYPE contact_tab IS TABLE OF contact_obj;
 /
 
-/* contact_obj function 
+/* contact_obj function */
 CREATE OR REPLACE FUNCTION get_contact 
   RETURN CONTACT_TAB IS
   
@@ -795,7 +793,7 @@ END;
 
 /*
 || Part 4 test query
-
+*/
 SET PAGESIZE 999
 COL full_name FORMAT A24
 SELECT first_name || CASE
@@ -805,7 +803,7 @@ SELECT first_name || CASE
   END || last_name AS full_name
 FROM   TABLE(get_contact);
 
-|||||||||||||| END PART 3 |||||||||||||||||||||||*/
+/*|||||||||||||| END PART 3 |||||||||||||||||||||||*/
 
 -- Close log file.
 SPOOL OFF
