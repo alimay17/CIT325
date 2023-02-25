@@ -1,0 +1,35 @@
+
+ System System       First         Last                                         
+User ID User Name    Name       MI Name                                         
+------- ------------ ---------- -- ----------                                   
+      6 BONDSB       Barry      L  Bonds                                        
+      7 CURRYW       Wardell    S  Curry                                        
+     -1 ANONYMOUS    <Null>     <N <Null>                                       
+                                ul                                              
+                                l>                                              
+                                                                                
+
+                         ACCOUNT                                                
+Full Name                NUMBER     Address                Telephone            
+------------------------ ---------- ---------------------- --------------       
+Charlie Brown            SLC-000011 Lehi, Utah             (207) 887-4321       
+Peppermint Patty         SLC-000011 Lehi, Utah             (207) 887-4321       
+Sally Brown              SLC-000011 Lehi, Utah             (207) 887-4321       
+Inserted contact 1 successfully                                                 
+Inserted contact 2 successfully                                                 
+Inserted contact 3 successfully                                                 
+
+                          System Account                                        
+Full Name                User ID Number     Address                             
+------------------------ ------- ---------- ----------------------              
+Telephone                                                                       
+--------------                                                                  
+Shirley Partridge              4 SLC-000012 Lehi, Utah                          
+(207) 887-4321                                                                  
+                                                                                
+Keith Partridge                6 SLC-000012 Lehi, Utah                          
+(207) 887-4321                                                                  
+                                                                                
+Laurie Partridge              -1 SLC-000012 Lehi, Utah                          
+(207) 887-4321                                                                  
+                                                                                
