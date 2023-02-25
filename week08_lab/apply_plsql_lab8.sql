@@ -106,11 +106,27 @@ BEGIN
 END;
 /
 
+-- test system user setup
+COL system_user_id  FORMAT 9999  HEADING "System|User ID"
+COL system_user_name FORMAT A12  HEADING "System|User Name"
+COL first_name       FORMAT A10  HEADING "First|Name"
+COL middle_initial   FORMAT A2   HEADING "MI"
+COL last_name        FORMAT A10  HeADING "Last|Name"
+SELECT 
+  system_user_id,
+  system_user_name,
+  first_name,
+  middle_initial,
+  last_name
+FROM   system_user
+WHERE  last_name IN ('Bonds','Curry')
+OR     system_user_name = 'ANONYMOUS';
 
-/* Contact Package Specification 
+
+/* Contact Package Specification */
 DROP PACKAGE contact_package;
 CREATE OR REPLACE PACKAGE contact_package IS
-  -- insert_contact procedure with user_name param
+  -- insert_contact version 1 (user_name)
   PROCEDURE insert_contact(
     pv_first_name         VARCHAR2,
     pv_middle_name        VARCHAR2,
@@ -131,7 +147,7 @@ CREATE OR REPLACE PACKAGE contact_package IS
     pv_user_name          VARCHAR2
   );
 
-  -- insert_contact procedure with user_id param
+  -- insert_contact version 2 (user_id)
   PROCEDURE insert_contact(
     pv_first_name         VARCHAR2,
     pv_middle_name        VARCHAR2,
@@ -183,50 +199,44 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
     lv_member_id_type      VARCHAR2(30);
     lv_telephone_id_type   VARCHAR2(30);
     lv_created_by          VARCHAR2(30);
+    lv_member_id           NUMBER;
     lv_time_stamp DATE := SYSDATE;
 
-    -- get_lookup_id helper function
-    FUNCTION get_lookup_id(
-      pv_table_name  VARCHAR2,
-      pv_column_name VARCHAR2,
-      pv_lookup_type VARCHAR2
-    ) RETURN NUMBER IS
+    -- get_member cursor
+    CURSOR get_member(cv_account_number VARCHAR2) IS
+      SELECT member_id FROM member
+      WHERE account_number = cv_account_number;
 
-      -- return variable
-      lv_return NUMBER := 0;
-
-      -- dynamic CURSOR for lookup table values
-      CURSOR find_common_lookup_id(
-        cv_table_name  VARCHAR2,
-        cv_column_name VARCHAR2,
-        cv_lookup_type VARCHAR2
-      ) IS
-        SELECT common_lookup_id
-        FROM common_lookup WHERE
-          common_lookup_table = cv_table_name   AND
-          common_lookup_column = cv_column_name AND
-          common_lookup_type = cv_lookup_type;
-    
-      -- begin get_lookup id
-      BEGIN
-        for i in find_common_lookup_id(
-          pv_table_name, 
-          pv_column_name,
-          pv_lookup_type
-        ) LOOP
-          lv_return := i.common_lookup_id;
-        END LOOP;
-      RETURN lv_return;
-    END get_lookup_id; -- end get_lookup_id    
+    -- find_common_lookup cursor
+    CURSOR find_common_lookup_id(
+      cv_table_name  VARCHAR2,
+      cv_column_name VARCHAR2,
+      cv_lookup_type VARCHAR2
+    ) IS
+      SELECT common_lookup_id
+      FROM common_lookup WHERE
+        common_lookup_table = cv_table_name   AND
+        common_lookup_column = cv_column_name AND
+        common_lookup_type = cv_lookup_type;
 
     -- begin insert_contact
     BEGIN
       -- get lookup id types
-      lv_member_id_type := get_lookup_id('MEMBER','MEMBER_TYPE',pv_member_type);
-      lv_credit_card_id_type := get_lookup_id('MEMBER','CREDIT_CARD_TYPE',pv_credit_card_type);
-      lv_contact_id_type := get_lookup_id('CONTACT','CONTACT_TYPE',pv_contact_type);
-      lv_address_id_type := get_lookup_id('ADDRESS','ADDRESS_TYPE',pv_address_type);
-      lv_telephone_id_type := get_lookup_id('TELEPHONE','TELEPHONE_TYPE',pv_telephone_type);
+      OPEN get_lookup_id('MEMBER','MEMBER_TYPE',pv_member_type);
+        FETCH get_lookup_id INTO lv_member_id_type;
+      CLOSE get_lookup_id;
+      OPEN get_lookup_id('MEMBER','CREDIT_CARD_TYPE',pv_credit_card_type);
+        FETCH get_lookup_id INTO lv_credit_card_id_type;
+      CLOSE get_lookup_id;
+      OPEN get_lookup_id('CONTACT','CONTACT_TYPE',pv_contact_type);
+        FETCH get_lookup_id INTO lv_contact_id_type;
+      CLOSE get_lookup_id;
+      OPEN get_lookup_id('ADDRESS','ADDRESS_TYPE',pv_address_type);
+        FETCH get_lookup_id INTO lv_address_id_type;
+      CLOSE get_lookup_id;
+      OPEN get_lookup_id('TELEPHONE','TELEPHONE_TYPE',pv_telephone_type);
+        FETCH get_lookup_id INTO lv_telephone_id_type;
+      CLOSE get_lookup_id;
 
       -- get system user
       SELECT system_user_id INTO lv_created_by
@@ -237,28 +247,34 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
       SAVEPOINT starting_point;
     
       -- insert into tables
-      -- member
-      INSERT INTO member (
-        member_id,
-        member_type,
-        account_number,
-        credit_card_number,
-        credit_card_type,
-        created_by,
-        creation_date,
-        last_updated_by,
-        last_update_date
-      ) VALUES (
-        member_s1.NEXTVAL,
-        lv_member_id_type,
-        pv_account_number,
-        pv_credit_card_number,
-        lv_credit_card_id_type,
-        lv_created_by,
-        lv_time_stamp,
-        lv_created_by,
-        lv_time_stamp
-      );
+      -- check if member already exists
+      OPEN get_member(pv_account_number);
+        FETCH get_member INTO lv_member_id;
+          IF (get_member%NOTFOUND) THEN
+          -- insert new member
+          INSERT INTO member (
+            member_id,
+            member_type,
+            account_number,
+            credit_card_number,
+            credit_card_type,
+            created_by,
+            creation_date,
+            last_updated_by,
+            last_update_date
+          ) VALUES (
+            member_s1.NEXTVAL,
+            lv_member_id_type,
+            pv_account_number,
+            pv_credit_card_number,
+            lv_credit_card_id_type,
+            lv_created_by,
+            lv_time_stamp,
+            lv_created_by,
+            lv_time_stamp
+          );
+        END IF;
+      CLOSE get_member;
 
       -- contact
       INSERT INTO contact(
@@ -351,21 +367,16 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
     lv_credit_card_id_type VARCHAR2(30);
     lv_member_id_type      VARCHAR2(30);
     lv_telephone_id_type   VARCHAR2(30);
-    lv_created_by          NUMBER;
-    lv_member_id           NUMBER := NULL;
+    lv_member_id           NUMBER;
+    lv_created_by          NUMBER := NVL(pv_user_id, -1);
     lv_time_stamp DATE := SYSDATE;
 
-    -- get_lookup_id function
-    FUNCTION get_lookup_id(
-      pv_table_name  VARCHAR2,
-      pv_column_name VARCHAR2,
-      pv_lookup_type VARCHAR2
-    ) RETURN NUMBER IS
+    -- get_member cursor
+    CURSOR get_member(cv_account_number VARCHAR2) IS
+      SELECT member_id FROM member
+      WHERE account_number = cv_account_number;
 
-      -- variables
-      lv_return NUMBER := 0;
-
-      -- dynamic CURSOR for lookup table values
+    -- find_common_lookup cursor
       CURSOR find_common_lookup_id(
         cv_table_name  VARCHAR2,
         cv_column_name VARCHAR2,
@@ -376,38 +387,25 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
           common_lookup_table = cv_table_name   AND
           common_lookup_column = cv_column_name AND
           common_lookup_type = cv_lookup_type;
-    
-      -- begin get_lookup id
-      BEGIN
-        for i in find_common_lookup_id(
-          pv_table_name, 
-          pv_column_name,
-          pv_lookup_type
-        ) LOOP
-          lv_return := i.common_lookup_id;
-        END LOOP;
-      RETURN lv_return;
-    END get_lookup_id;
-  
-    -- get_member cursor
-    CURSOR get_member(cv_account_number VARCHAR2) IS
-      SELECT member_id FROM member
-      WHERE account_number = cv_account_number;
 
   -- begin insert_contact
   BEGIN
     -- get lookup id types
-    lv_member_id_type := get_lookup_id('MEMBER','MEMBER_TYPE',pv_member_type);
-    lv_credit_card_id_type := get_lookup_id('MEMBER','CREDIT_CARD_TYPE',pv_credit_card_type);
-    lv_contact_id_type := get_lookup_id('CONTACT','CONTACT_TYPE',pv_contact_type);
-    lv_address_id_type := get_lookup_id('ADDRESS','ADDRESS_TYPE',pv_address_type);
-    lv_telephone_id_type := get_lookup_id('TELEPHONE','TELEPHONE_TYPE',pv_telephone_type);
-
-    -- system user_id
-    IF (pv_user_id = NULL) THEN
-      lv_created_by := -1;
-    ELSE
-      lv_created_by := pv_user_id;
+    OPEN get_lookup_id('MEMBER','MEMBER_TYPE',pv_member_type);
+      FETCH get_lookup_id INTO lv_member_id_type;
+    CLOSE get_lookup_id;
+    OPEN get_lookup_id('MEMBER','CREDIT_CARD_TYPE',pv_credit_card_type);
+      FETCH get_lookup_id INTO lv_credit_card_id_type;
+    CLOSE get_lookup_id;
+    OPEN get_lookup_id('CONTACT','CONTACT_TYPE',pv_contact_type);
+      FETCH get_lookup_id INTO lv_contact_id_type;
+    CLOSE get_lookup_id;
+    OPEN get_lookup_id('ADDRESS','ADDRESS_TYPE',pv_address_type);
+      FETCH get_lookup_id INTO lv_address_id_type;
+    CLOSE get_lookup_id;
+    OPEN get_lookup_id('TELEPHONE','TELEPHONE_TYPE',pv_telephone_type);
+      FETCH get_lookup_id INTO lv_telephone_id_type;
+    CLOSE get_lookup_id;
 
     -- rollback point
     SAVEPOINT starting_point;
@@ -415,35 +413,34 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
     -- insert into tables
 
     -- check if member already exists
-    OPEN get_member;
-    FETCH get_member INTO lv_member_id;
-
-    IF (lv_member_id = NULL) THEN
-      -- insert new member
-      INSERT INTO member (
-        member_id,
-        member_type,
-        account_number,
-        credit_card_number,
-        credit_card_type,
-        created_by,
-        creation_date,
-        last_updated_by,
-        last_update_date
-      ) VALUES (
-        member_s1.NEXTVAL,
-        lv_member_id_type,
-        pv_account_number,
-        pv_credit_card_number,
-        lv_credit_card_id_type,
-        lv_created_by,
-        lv_time_stamp,
-        lv_created_by,
-        lv_time_stamp
-      );
-    END IF;
+    OPEN get_member(pv_account_number);
+      FETCH get_member INTO lv_member_id;
+        IF (get_member%NOTFOUND) THEN
+        -- insert new member
+        INSERT INTO member (
+          member_id,
+          member_type,
+          account_number,
+          credit_card_number,
+          credit_card_type,
+          created_by,
+          creation_date,
+          last_updated_by,
+          last_update_date
+        ) VALUES (
+          member_s1.NEXTVAL,
+          lv_member_id_type,
+          pv_account_number,
+          pv_credit_card_number,
+          lv_credit_card_id_type,
+          lv_created_by,
+          lv_time_stamp,
+          lv_created_by,
+          lv_time_stamp
+        );
+      END IF;
     CLOSE get_member;
-    
+
     -- contact
     INSERT INTO contact(
       contact_id,
@@ -509,12 +506,72 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
   END;
   -- end insert_contact version 2 (user_id)
 
-END contact_package;
+END;
+-- end contact_package
 /
 
-
-LIST
+-- LIST
 SHOW ERRORS
+
+/* TESTS */
+BEGIN
+  -- insert new contact 1 (user_name)
+  contact_package.insert_contact(
+    pv_first_name         => 'Charlie',
+    pv_last_name          => 'Brown',
+    pv_contact_type       => 'CUSTOMER',
+    pv_account_number     => 'SLC-000011',
+    pv_member_type        => 'GROUP',
+    pv_credit_card_number => '888-666-888-4444',
+    pv_credit_card_type   => 'VISA_CARD',
+    pv_city               => 'Lehi',
+    pv_state_province     => 'Utah',
+    pv_postal_code        => '84043',
+    pv_address_type       => 'HOME',
+    pv_country_code       => '207',
+    pv_telephone_number   => '887-4321',
+    pv_telephone_type     => 'HOME',
+    pv_user_name          => 'DBA 3'
+  );
+
+  -- insert new contact 2 (user_name blank)
+  contact_package.insert_contact(
+    pv_first_name         => 'Peppermint',
+    pv_last_name          => 'Patty',
+    pv_contact_type       => 'CUSTOMER',
+    pv_account_number     => 'SLC-000011',
+    pv_member_type        => 'GROUP',
+    pv_credit_card_number => '888-666-888-4444',
+    pv_credit_card_type   => 'VISA_CARD',
+    pv_city               => 'Lehi',
+    pv_state_province     => 'Utah',
+    pv_postal_code        => '84043',
+    pv_address_type       => 'HOME',
+    pv_country_code       => '207',
+    pv_telephone_number   => '887-4321',
+    pv_telephone_type     => 'HOME',
+  );
+
+  -- insert new contact 3 (user_id)
+  contact_package.insert_contact(
+    pv_first_name         => 'Sally',
+    pv_last_name          => 'Brown',
+    pv_contact_type       => 'CUSTOMER',
+    pv_account_number     => 'SLC-000011',
+    pv_member_type        => 'GROUP',
+    pv_credit_card_number => '888-666-888-4444',
+    pv_credit_card_type   => 'VISA_CARD',
+    pv_city               => 'Lehi',
+    pv_state_province     => 'Utah',
+    pv_postal_code        => '84043',
+    pv_address_type       => 'HOME',
+    pv_country_code       => '207',
+    pv_telephone_number   => '887-4321',
+    pv_telephone_type     => 'HOME',
+    pv_user_id            => 6
+  );
+END;
+/
 
 -- Close log file.
 SPOOL OFF
