@@ -12,6 +12,9 @@
 -- Open log file.
 SPOOL apply_plsql_lab8.txt
 
+SET SERVEROUTPUT ON SIZE UNLIMITED
+
+
 /* Database setup 
 DECLARE
   -- variables
@@ -165,7 +168,7 @@ CREATE OR REPLACE PACKAGE contact_package IS
     pv_area_code          VARCHAR2,
     pv_telephone_number   VARCHAR2,
     pv_telephone_type     VARCHAR2,
-    pv_user_id            NUMBER := null
+    pv_user_id            NUMBER := NULL
   );
 END contact_package;
 /
@@ -207,8 +210,8 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
       SELECT member_id FROM member
       WHERE account_number = cv_account_number;
 
-    -- find_common_lookup cursor
-    CURSOR find_common_lookup_id(
+    -- get_lookup_id cursor
+    CURSOR get_lookup_id(
       cv_table_name  VARCHAR2,
       cv_column_name VARCHAR2,
       cv_lookup_type VARCHAR2
@@ -273,6 +276,8 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
             lv_created_by,
             lv_time_stamp
           );
+          lv_member_id := member_s1.CURRVAL;
+
         END IF;
       CLOSE get_member;
 
@@ -290,7 +295,7 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
         last_update_date
       ) VALUES (
         contact_s1.NEXTVAL,
-        member_s1.CURRVAL,
+        lv_member_id,
         lv_contact_id_type,
         pv_last_name,
         pv_first_name,
@@ -376,8 +381,8 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
       SELECT member_id FROM member
       WHERE account_number = cv_account_number;
 
-    -- find_common_lookup cursor
-      CURSOR find_common_lookup_id(
+    -- get_lookup_id cursor
+      CURSOR get_lookup_id(
         cv_table_name  VARCHAR2,
         cv_column_name VARCHAR2,
         cv_lookup_type VARCHAR2
@@ -390,6 +395,7 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
 
   -- begin insert_contact
   BEGIN
+
     -- get lookup id types
     OPEN get_lookup_id('MEMBER','MEMBER_TYPE',pv_member_type);
       FETCH get_lookup_id INTO lv_member_id_type;
@@ -438,6 +444,7 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
           lv_created_by,
           lv_time_stamp
         );
+        lv_member_id := member_s1.CURRVAL;
       END IF;
     CLOSE get_member;
 
@@ -455,7 +462,7 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
       last_update_date
     ) VALUES (
       contact_s1.NEXTVAL,
-      member_s1.CURRVAL,
+      lv_member_id,
       lv_contact_id_type,
       pv_last_name,
       pv_first_name,
@@ -498,10 +505,10 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
     -- commit changes
     COMMIT;
 
-    -- handle exceptions
-    EXCEPTION 
-      WHEN OTHERS THEN
-        ROLLBACK TO starting_point;
+    -- -- handle exceptions
+    -- EXCEPTION 
+    --   WHEN OTHERS THEN
+    --     ROLLBACK TO starting_point;
 
   END;
   -- end insert_contact version 2 (user_id)
@@ -518,6 +525,7 @@ BEGIN
   -- insert new contact 1 (user_name)
   contact_package.insert_contact(
     pv_first_name         => 'Charlie',
+    pv_middle_name        => NULL,
     pv_last_name          => 'Brown',
     pv_contact_type       => 'CUSTOMER',
     pv_account_number     => 'SLC-000011',
@@ -528,7 +536,8 @@ BEGIN
     pv_state_province     => 'Utah',
     pv_postal_code        => '84043',
     pv_address_type       => 'HOME',
-    pv_country_code       => '207',
+    pv_country_code       => '001',
+    pv_area_code          => '207',
     pv_telephone_number   => '887-4321',
     pv_telephone_type     => 'HOME',
     pv_user_name          => 'DBA 3'
@@ -537,6 +546,7 @@ BEGIN
   -- insert new contact 2 (user_name blank)
   contact_package.insert_contact(
     pv_first_name         => 'Peppermint',
+    pv_middle_name        => NULL,
     pv_last_name          => 'Patty',
     pv_contact_type       => 'CUSTOMER',
     pv_account_number     => 'SLC-000011',
@@ -547,31 +557,58 @@ BEGIN
     pv_state_province     => 'Utah',
     pv_postal_code        => '84043',
     pv_address_type       => 'HOME',
-    pv_country_code       => '207',
+    pv_country_code       => '001',
+    pv_area_code          => '207',
     pv_telephone_number   => '887-4321',
     pv_telephone_type     => 'HOME',
+    pv_user_id            => NULL
   );
 
   -- insert new contact 3 (user_id)
   contact_package.insert_contact(
     pv_first_name         => 'Sally',
+    pv_middle_name        => NULL,
     pv_last_name          => 'Brown',
     pv_contact_type       => 'CUSTOMER',
     pv_account_number     => 'SLC-000011',
     pv_member_type        => 'GROUP',
     pv_credit_card_number => '888-666-888-4444',
-    pv_credit_card_type   => 'VISA_CARD',
+    pv_credit_card_type   =>'VISA_CARD',
     pv_city               => 'Lehi',
     pv_state_province     => 'Utah',
     pv_postal_code        => '84043',
     pv_address_type       => 'HOME',
-    pv_country_code       => '207',
+    pv_country_code       => '001',
+    pv_area_code          => '207',
     pv_telephone_number   => '887-4321',
     pv_telephone_type     => 'HOME',
     pv_user_id            => 6
   );
 END;
 /
+LIST
+
+-- verify insert query
+COL full_name      FORMAT A24
+COL account_number FORMAT A10 HEADING "ACCOUNT|NUMBER"
+COL address        FORMAT A22
+COL telephone      FORMAT A14
+
+SELECT c.first_name
+||     CASE
+         WHEN c.middle_name IS NOT NULL THEN ' '||c.middle_name||' ' ELSE ' '
+       END
+||     c.last_name AS full_name
+,      m.account_number
+,      a.city || ', ' || a.state_province AS address
+,      '(' || t.area_code || ') ' || t.telephone_number AS telephone
+FROM   member m INNER JOIN contact c
+ON     m.member_id = c.member_id INNER JOIN address a
+ON     c.contact_id = a.contact_id INNER JOIN telephone t
+ON     c.contact_id = t.contact_id
+AND    a.address_id = t.address_id
+WHERE  c.last_name IN ('Patty' ,'Brown');
+
 
 -- Close log file.
 SPOOL OFF
