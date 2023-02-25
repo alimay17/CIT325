@@ -1,21 +1,23 @@
 /*
 ||  Name:          apply_plsql_lab8.sql
-||  Date:          24 Feb 2023
+||  Date:          25 Feb 2023
 ||  Author:        Alice Smith
 ||  Purpose:       Complete 325 Chapter 9 lab.
 */
 
--- Call seeding libraries
--- @$LIB/cleanup_oracle.sql
--- @$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
+/* Call seeding libraries */
+@$LIB/cleanup_oracle.sql
+@$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
 
--- Open log file.
+/* open log file */
 SPOOL apply_plsql_lab8.txt
 
+/* environment settings */
 SET SERVEROUTPUT ON SIZE UNLIMITED
+SET VERIFY OFF
+SET FEEDBACK OFF
 
-
-/* Database setup 
+/* Database setup */
 DECLARE
   -- variables
   lv_counter  NUMBER := 2;
@@ -31,7 +33,7 @@ BEGIN
     lv_counter := lv_counter + 1;
   END LOOP;
 
-  -- insert new users into system_user
+  -- insert new users into system_user table
   --user 1 BONDSB
   INSERT INTO system_user(
     system_user_id,
@@ -125,13 +127,9 @@ FROM   system_user
 WHERE  last_name IN ('Bonds','Curry')
 OR     system_user_name = 'ANONYMOUS';
 
-
-/* Contact Package Specification */
-
 /*
-|| Part 1 - contact_package with 2 overloaded procedure
+|| Part 1 - contact_package with 2 overloaded procedures
 */
-DROP PACKAGE contact_package;
 -- contact_package specification
 CREATE OR REPLACE PACKAGE contact_package IS
   -- insert_contact version 1 (user_name)
@@ -179,7 +177,7 @@ END contact_package;
 /
 -- end contact_package specification
 
-/* Contact Package Body */
+-- contact_package body
 CREATE OR REPLACE PACKAGE BODY contact_package IS
   -- insert_contact version 1 (user_name)
   PROCEDURE insert_contact(
@@ -251,7 +249,7 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
       SELECT system_user_id INTO lv_created_by
         FROM system_user
         WHERE system_user_name = pv_user_name;
-
+      
       -- rollback point
       SAVEPOINT starting_point;
     
@@ -283,7 +281,6 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
             lv_time_stamp
           );
           lv_member_id := member_s1.CURRVAL;
-
         END IF;
       CLOSE get_member;
 
@@ -535,7 +532,7 @@ BEGIN
     pv_contact_type       => 'CUSTOMER',
     pv_account_number     => 'SLC-000011',
     pv_member_type        => 'GROUP',
-    pv_credit_card_number => '888-666-888-4444',
+    pv_credit_card_number => '8888-6666-8888-4444',
     pv_credit_card_type   => 'VISA_CARD',
     pv_city               => 'Lehi',
     pv_state_province     => 'Utah',
@@ -548,7 +545,7 @@ BEGIN
     pv_user_name          => 'DBA 3'
   );
 
-  -- insert new contact 2 (user_name blank)
+  -- insert new contact 2 (user null)
   contact_package.insert_contact(
     pv_first_name         => 'Peppermint',
     pv_middle_name        => NULL,
@@ -556,7 +553,7 @@ BEGIN
     pv_contact_type       => 'CUSTOMER',
     pv_account_number     => 'SLC-000011',
     pv_member_type        => 'GROUP',
-    pv_credit_card_number => '888-666-888-4444',
+    pv_credit_card_number => '8888-6666-8888-4444',
     pv_credit_card_type   => 'VISA_CARD',
     pv_city               => 'Lehi',
     pv_state_province     => 'Utah',
@@ -577,7 +574,7 @@ BEGIN
     pv_contact_type       => 'CUSTOMER',
     pv_account_number     => 'SLC-000011',
     pv_member_type        => 'GROUP',
-    pv_credit_card_number => '888-666-888-4444',
+    pv_credit_card_number => '8888-6666-8888-4444',
     pv_credit_card_type   =>'VISA_CARD',
     pv_city               => 'Lehi',
     pv_state_province     => 'Utah',
@@ -640,7 +637,7 @@ CREATE OR REPLACE PACKAGE contact_package IS
     pv_telephone_number   VARCHAR2,
     pv_telephone_type     VARCHAR2,
     pv_user_name          VARCHAR2
-  );
+  ) RETURN NUMBER;
 
   -- insert_contact version 2 (user_id)
   FUNCTION insert_contact(
@@ -661,7 +658,7 @@ CREATE OR REPLACE PACKAGE contact_package IS
     pv_telephone_number   VARCHAR2,
     pv_telephone_type     VARCHAR2,
     pv_user_id            NUMBER := NULL
-  );
+  ) RETURN NUMBER;
 
 END contact_package;
 /
@@ -1020,7 +1017,106 @@ CREATE OR REPLACE PACKAGE BODY contact_package IS
 END;
 /
 --end contact_package body
-LIST
-SHOW ERRORS
+
+/* 
+|| Part 2 test - insert three group contacts
+*/
+BEGIN
+
+  -- insert new contact 1 (user_name)
+  IF contact_package.insert_contact(
+    pv_first_name         => 'Shirley',
+    pv_middle_name        => NULL,
+    pv_last_name          => 'Partridge',
+    pv_contact_type       => 'CUSTOMER',
+    pv_account_number     => 'SLC-000012',
+    pv_member_type        => 'GROUP',
+    pv_credit_card_number => '8888-6666-8888-4444',
+    pv_credit_card_type   => 'VISA_CARD',
+    pv_city               => 'Lehi',
+    pv_state_province     => 'Utah',
+    pv_postal_code        => '84043',
+    pv_address_type       => 'HOME',
+    pv_country_code       => '001',
+    pv_area_code          => '207',
+    pv_telephone_number   => '887-4321',
+    pv_telephone_type     => 'HOME',
+    pv_user_name          => 'DBA 3'
+  ) = 1 THEN
+    dbms_output.put_line('Inserted contact 1 successfully');
+  END IF;
+
+  -- insert new contact 2 (user_id)
+  IF contact_package.insert_contact(
+    pv_first_name         => 'Keith',
+    pv_middle_name        => NULL,
+    pv_last_name          => 'Partridge',
+    pv_contact_type       => 'CUSTOMER',
+    pv_account_number     => 'SLC-000012',
+    pv_member_type        => 'GROUP',
+    pv_credit_card_number => '8888-6666-8888-4444',
+    pv_credit_card_type   => 'VISA_CARD',
+    pv_city               => 'Lehi',
+    pv_state_province     => 'Utah',
+    pv_postal_code        => '84043',
+    pv_address_type       => 'HOME',
+    pv_country_code       => '001',
+    pv_area_code          => '207',
+    pv_telephone_number   => '887-4321',
+    pv_telephone_type     => 'HOME',
+    pv_user_id            => 6
+  ) = 1 THEN
+    dbms_output.put_line('Inserted contact 2 successfully');
+  END IF;
+
+  -- insert new contact 1 (user_id)
+  IF contact_package.insert_contact(
+    pv_first_name         => 'Laurie',
+    pv_middle_name        => NULL,
+    pv_last_name          => 'Partridge',
+    pv_contact_type       => 'CUSTOMER',
+    pv_account_number     => 'SLC-000012',
+    pv_member_type        => 'GROUP',
+    pv_credit_card_number => '8888-6666-8888-4444',
+    pv_credit_card_type   => 'VISA_CARD',
+    pv_city               => 'Lehi',
+    pv_state_province     => 'Utah',
+    pv_postal_code        => '84043',
+    pv_address_type       => 'HOME',
+    pv_country_code       => '001',
+    pv_area_code          => '207',
+    pv_telephone_number   => '887-4321',
+    pv_telephone_type     => 'HOME',
+    pv_user_id            => -1
+  ) = 1 THEN
+    dbms_output.put_line('Inserted contact 3 successfully');
+  END IF;
+END;
+/
+
+-- test query
+COL full_name      FORMAT A24  HEADING "Full Name"
+COL created_by     FORMAT 9999 HEADING "System|User ID"
+COL account_number FORMAT A10  HEADING "Account|Number"
+COL address        FORMAT A22  HEADING "Address"
+COL telephone      FORMAT A14  HEADING "Telephone"
+SELECT c.first_name
+||     CASE
+         WHEN c.middle_name IS NOT NULL THEN ' '||c.middle_name||' ' ELSE ' '
+       END
+||     c.last_name AS full_name
+,      c.created_by
+,      m.account_number
+,      a.city || ', ' || a.state_province AS address
+,      '(' || t.area_code || ') ' || t.telephone_number AS telephone
+FROM   member m INNER JOIN contact c
+ON     m.member_id = c.member_id INNER JOIN address a
+ON     c.contact_id = a.contact_id INNER JOIN telephone t
+ON     c.contact_id = t.contact_id
+AND    a.address_id = t.address_id
+WHERE  c.last_name = 'Partridge';
+
+/*|||||||||||||| END PART 2 |||||||||||||||||||||||*/
+
 -- Close log file.
 SPOOL OFF
