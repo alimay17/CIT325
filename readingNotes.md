@@ -87,3 +87,27 @@ Only use local named blocks if there is no chance that something else will need 
 -  Scalar = single build in values
 - Object = User defined data type. 
 A list of object data types is a collection of object. An object is a user defined data type 
+
+# Chapter 10 - Large Objects (LOB)
+- CLOB = Character Large Objects
+- NCLOB = National Character Large Objects
+  - Must qualify the character set of the text 
+- BLOB = Binary Large Objects
+- Three states for LOBS
+  - NULL: null value in column locator
+  - Empty: column locator exists but isn’t populated; length = 0
+  - Populated: contains locator and length > 0
+## CLOB & NCLOB
+- DB column contains a locator pointing to storage location
+- Require construction (implicit or explicit) 
+  - VARCHAR2, String literals etc.
+  - Can’t use LONG data type
+- `dbms_lob` package allows you to override size constraint
+- Can load from file with `dbms_lob.loadfromfile || dbms_lob.loadclobfromfile`
+- 
+- 
+- 
+- 
+- 
+- 
+- 
