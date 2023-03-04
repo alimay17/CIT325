@@ -10,9 +10,9 @@
 -- Open log file.
 SPOOL apply_plsql_lab9.txt
 
-/*
-|| Database Setup
-*/
+-- environment settings
+SET SERVEROUTPUT ON SIZE UNLIMITED
+SET VERIFY OFF
 
 -- create avenger table from external file
 CREATE TABLE avenger( 
@@ -64,8 +64,8 @@ ALTER TABLE item
 
 -- fix typo on item table
 UPDATE item i
-SET    i.item_title = 'Harry Potter and the Sorcerer''s Stone'
-WHERE  i.item_title = 'Harry Potter and the Sorcer''s Stone';
+  SET    i.item_title = 'Harry Potter and the Sorcerer''s Stone'
+  WHERE  i.item_title = 'Harry Potter and the Sorcer''s Stone';
 
 -- add text file reference content to item table
 UPDATE item i
@@ -84,6 +84,7 @@ UPDATE item i
   SET    i.text_file_name = 'HarryPotter5.txt'
   WHERE  i.item_title = 'Harry Potter and the Order of the Phoenix';
 
+
 -- verify updates query
 COL text_file_name  FORMAT A16
 COL item_title      FORMAT A42
@@ -98,9 +99,7 @@ AND      cl.common_lookup_column = 'ITEM_TYPE'
 AND      REGEXP_LIKE(cl.common_lookup_type,'^(dvd|vhs).*$','i')
 ORDER BY i.text_file_name;
 
-/*
-|| Procedures
-*/
+
 -- load_clob_from_file procedure
 CREATE OR REPLACE PROCEDURE load_clob_from_file( 
     src_file_name     IN VARCHAR2,
@@ -169,6 +168,10 @@ CREATE OR REPLACE PROCEDURE load_clob_from_file(
     END IF;
   END load_clob_from_file;
 -- end load_clob_from_file
+/
+
+-- verify load_clob_from_file
+DESC load_clob_from_file;
 
 -- update_item_description procedure
 CREATE OR REPLACE PROCEDURE update_item_description(
@@ -201,7 +204,8 @@ CREATE OR REPLACE PROCEDURE update_item_description(
   EXCEPTION 
     WHEN OTHERS THEN
       dbms_output.put_line('Unable to update descriptions');
-END;
+  END;
+-- end update_item_description
 /
 
 -- test procedures
