@@ -108,11 +108,7 @@ CREATE SEQUENCE logger_s;
 -- check table creation
 DESC logger;
 
--- insert new base_t row default constuctor
-INSERT INTO logger VALUES(
-    logger_s.NEXTVAL,
-    base_t() 
-);
+
 -- insert new base_t with parameter constructor
 DECLARE
     lv_base_t BASE_T;
@@ -121,11 +117,28 @@ BEGIN
         oname => 'BASE_T',
         name => 'NEW'
     );
+
+    -- savepoint
+    SAVEPOINT logger_rollback1;
+
+    -- insert new base_t row default constuctor
+    INSERT INTO logger VALUES(
+        logger_s.NEXTVAL,
+        base_t() 
+    );
+    
+    -- insert new base_t
     INSERT INTO logger VALUES(
         logger_s.NEXTVAL,
         lv_base_t
     );
     COMMIT;
+
+    -- handle exceptions
+    EXCEPTION
+        WHEN OTHERS THEN
+            dbms_output.put_line('unable to insert rows');
+            ROLLBACK TO logger_rollback1;
 END;
 /
 
@@ -377,6 +390,8 @@ BEGIN
         last_updated_date => SYSDATE
     );
 
+    -- rollback point 
+    SAVEPOINT logger_rollback2;
     -- insert new objects
     INSERT INTO logger VALUES(
         logger_s.NEXTVAL,
@@ -387,6 +402,12 @@ BEGIN
         lv_contact_t
     );
     COMMIT;
+
+    -- handle exceptions
+    EXCEPTION
+        WHEN OTHERS THEN
+            dbms_output.put_line('unable to insert rows');
+            ROLLBACK TO logger_rollback2;
 END;
 /
 

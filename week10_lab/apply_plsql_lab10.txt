@@ -73,9 +73,6 @@ Sequence created.
  LOG_TEXT                                           BASE_T
 
 
-1 row created.
-
-
 PL/SQL procedure successfully completed.
 
 
