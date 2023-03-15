@@ -1,184 +1,7 @@
-/*
-||  Name:          apply_plsql_lab11.sql
-||  Date:          14 Mar 2023
-||  Purpose:       Complete 325 Chapter 12 lab.
-||  Dependencies:  Run the Oracle Database 12c PL/SQL Programming setup programs.
-*/
-
-/* Call seeding libraries */
--- @$LIB/cleanup_oracle.sql
--- @$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
-
 -- Open log file.
 SPOOL apply_plsql_lab11.txt
 SET SERVEROUTPUT ON SIZE UNLIMITED
 
--- add text_file_name column to item table
-ALTER TABLE item
-  ADD (text_file_name VARCHAR2(40));
-
-/* Clean up database */
-DROP TABLE logger;
-DROP SEQUENCE logger_s;
-
-/*
-|| Part 1 - Create and test logger table
-*/
--- create logger table and sequence
-CREATE TABLE logger(
-    LOGGER_ID               NUMBER,
-    OLD_ITEM_ID		          NUMBER,
-    OLD_ITEM_BARCODE		    VARCHAR2(20),
-    OLD_ITEM_TYPE			      NUMBER,
-    OLD_ITEM_TITLE 			    VARCHAR2(60),
-    OLD_ITEM_SUBTITLE		    VARCHAR2(60),
-    OLD_ITEM_RATING				  VARCHAR2(8),
-    OLD_ITEM_RATING_AGENCY 	VARCHAR2(4),
-    OLD_ITEM_RELEASE_DATE		DATE,
-    OLD_CREATED_BY 					NUMBER,
-    OLD_CREATION_DATE				DATE,
-    OLD_LAST_UPDATED_BY			NUMBER,
-    OLD_LAST_UPDATE_DATE		DATE,
-    OLD_TEXT_FILE_NAME			VARCHAR2(40),
-    NEW_ITEM_ID							NUMBER,
-    NEW_ITEM_BARCODE				VARCHAR2(20),
-    NEW_ITEM_TYPE						NUMBER,
-    NEW_ITEM_TITLE 				  VARCHAR2(60),
-    NEW_ITEM_SUBTITLE				VARCHAR2(60),
-    NEW_ITEM_RATING				  VARCHAR2(8),
-    NEW_ITEM_RATING_AGENCY 	VARCHAR2(4),
-    NEW_ITEM_RELEASE_DATE		DATE,
-    NEW_CREATED_BY 				  NUMBER,
-    NEW_CREATION_DATE				DATE,
-    NEW_LAST_UPDATED_BY			NUMBER,
-    NEW_LAST_UPDATE_DATE		DATE,
-    NEW_TEXT_FILE_NAME	    VARCHAR2(40)
-);
-CREATE SEQUENCE logger_s;
-
--- check table creation
-DESC logger;
-
--- test insert into logger table
-DECLARE
-  /* Dynamic cursor. */
-  CURSOR get_row IS
-    SELECT * FROM item WHERE item_title = 'Brave Heart';
-
-    lv_log_id NUMBER;
-BEGIN
-  /* Read the dynamic cursor. */
-  FOR i IN get_row LOOP
-    lv_log_id := logger_s.NEXTVAL;
-    
-    INSERT INTO logger (
-      logger_id,
-      old_item_id,
-      old_item_title,
-      new_item_id,
-      new_item_title
-    )VALUES(
-      lv_log_id,
-      i.item_id,
-      i.item_title,
-      i.item_id,
-      i.item_title
-    );
-  END LOOP;
-END;
-/
-
--- verify test insert
-COL logger_id       FORMAT 9999 HEADING "Logger|ID #"
-COL old_item_id     FORMAT 9999 HEADING "Old|Item|ID #"
-COL old_item_title  FORMAT A20  HEADING "Old Item Title"
-COL new_item_id     FORMAT 9999 HEADING "New|Item|ID #"
-COL new_item_title  FORMAT A30  HEADING "New Item Title"
-SELECT l.logger_id
-,      l.old_item_id
-,      l.old_item_title
-,      l.new_item_id
-,      l.new_item_title
-FROM   logger l;
-
-/* ||  END Part 1 || */
-
-/*
-|| Part 2 - create manage_item package
-|| includes 3 overloaded item_insert procedures
-*/
-
--- package declaration
-CREATE OR REPLACE PACKAGE manage_item IS
-
-  -- item insert 1 (update item)
-  PROCEDURE item_insert(
-    pv_new_item_id            NUMBER,			
-    pv_new_item_barcode       VARCHAR2,			
-    pv_new_item_type          NUMBER,			
-    pv_new_item_title         VARCHAR2,			
-    pv_new_item_subtitle      VARCHAR2,			
-    pv_new_item_rating        VARCHAR2,			
-    pv_new_item_rating_agency VARCHAR2,			
-    pv_new_item_release_date  DATE,			
-    pv_new_created_by         NUMBER,				
-    pv_new_creation_date      DATE,				
-    pv_new_updated_by         NUMBER,				
-    pv_new_update_date        DATE,				
-    pv_new_text_file_name     VARCHAR2,
-    pv_old_item_id            NUMBER,			
-    pv_old_item_barcode       VARCHAR2,			
-    pv_old_item_type          NUMBER,			
-    pv_old_item_title         VARCHAR2,			
-    pv_old_item_subtitle      VARCHAR2,			
-    pv_old_item_rating        VARCHAR2,			
-    pv_old_item_rating_agency VARCHAR2,			
-    pv_old_item_release_date  DATE,			
-    pv_old_created_by         NUMBER,				
-    pv_old_creation_date      DATE,				
-    pv_old_updated_by         NUMBER,				
-    pv_old_update_date        DATE,				
-    pv_old_text_file_name     VARCHAR2
-  );
-
-  -- item_insert 2 (add new item)
-  PROCEDURE item_insert(
-    pv_new_item_id            NUMBER,			
-    pv_new_item_barcode       VARCHAR2,			
-    pv_new_item_type          NUMBER,			
-    pv_new_item_title         VARCHAR2,			
-    pv_new_item_subtitle      VARCHAR2,			
-    pv_new_item_rating        VARCHAR2,			
-    pv_new_item_rating_agency VARCHAR2,			
-    pv_new_item_release_date  DATE,			
-    pv_new_created_by         NUMBER,				
-    pv_new_creation_date      DATE,				
-    pv_new_updated_by         NUMBER,				
-    pv_new_update_date        DATE,				
-    pv_new_text_file_name     VARCHAR2
-  );
-
-  --item_insert 3 (delete item)
-  PROCEDURE item_insert(
-    pv_old_item_id            NUMBER,			
-    pv_old_item_barcode       VARCHAR2,			
-    pv_old_item_type          NUMBER,			
-    pv_old_item_title         VARCHAR2,			
-    pv_old_item_subtitle      VARCHAR2,			
-    pv_old_item_rating        VARCHAR2,			
-    pv_old_item_rating_agency VARCHAR2,			
-    pv_old_item_release_date  DATE,			
-    pv_old_created_by         NUMBER,				
-    pv_old_creation_date      DATE,				
-    pv_old_updated_by         NUMBER,				
-    pv_old_update_date        DATE,				
-    pv_old_text_file_name     VARCHAR2
-  );
-
-END manage_item; -- end package declaration
-/
-
--- package body
 CREATE OR REPLACE PACKAGE BODY manage_item IS
     -- item insert 1 (update item)
   PROCEDURE item_insert(
@@ -319,6 +142,7 @@ CREATE OR REPLACE PACKAGE BODY manage_item IS
   END;
   -- end item_insert 2 (add new item)
 
+
   -- item_insert 3 (delete item)
   PROCEDURE item_insert(
     pv_old_item_id            NUMBER,			
@@ -367,14 +191,10 @@ CREATE OR REPLACE PACKAGE BODY manage_item IS
   END;
   -- end item_insert 3 (delete item)
 
-END manage_item; -- end package body
+END manage_item;
 /
-/* ||  END Part 2 || */
 
-/*
-|| Part 3 - 
-*/
+LIST;
+SHOW ERRORS;
 
-/* ||  END Part 3 || */
--- Close log file.
 SPOOL OFF
