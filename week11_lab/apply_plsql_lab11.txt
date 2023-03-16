@@ -1,0 +1,210 @@
+
+Table altered.
+
+
+Table altered.
+
+DROP TABLE logger
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+DROP SEQUENCE logger_s
+              *
+ERROR at line 1:
+ORA-02289: sequence does not exist 
+
+
+
+Table created.
+
+
+Sequence created.
+
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ LOGGER_ID                                          NUMBER
+ OLD_ITEM_ID                                        NUMBER
+ OLD_ITEM_BARCODE                                   VARCHAR2(20)
+ OLD_ITEM_TYPE                                      NUMBER
+ OLD_ITEM_TITLE                                     VARCHAR2(60)
+ OLD_ITEM_SUBTITLE                                  VARCHAR2(60)
+ OLD_ITEM_RATING                                    VARCHAR2(8)
+ OLD_ITEM_RATING_AGENCY                             VARCHAR2(4)
+ OLD_ITEM_RELEASE_DATE                              DATE
+ OLD_CREATED_BY                                     NUMBER
+ OLD_CREATION_DATE                                  DATE
+ OLD_LAST_UPDATED_BY                                NUMBER
+ OLD_LAST_UPDATE_DATE                               DATE
+ OLD_TEXT_FILE_NAME                                 VARCHAR2(40)
+ NEW_ITEM_ID                                        NUMBER
+ NEW_ITEM_BARCODE                                   VARCHAR2(20)
+ NEW_ITEM_TYPE                                      NUMBER
+ NEW_ITEM_TITLE                                     VARCHAR2(60)
+ NEW_ITEM_SUBTITLE                                  VARCHAR2(60)
+ NEW_ITEM_RATING                                    VARCHAR2(8)
+ NEW_ITEM_RATING_AGENCY                             VARCHAR2(4)
+ NEW_ITEM_RELEASE_DATE                              DATE
+ NEW_CREATED_BY                                     NUMBER
+ NEW_CREATION_DATE                                  DATE
+ NEW_LAST_UPDATED_BY                                NUMBER
+ NEW_LAST_UPDATE_DATE                               DATE
+ NEW_TEXT_FILE_NAME                                 VARCHAR2(40)
+
+
+PL/SQL procedure successfully completed.
+
+
+         Old                        New                                         
+Logger  Item                       Item                                         
+  ID #  ID # Old Item Title        ID # New Item Title                          
+------ ----- -------------------- ----- ------------------------------          
+     1  1014 Brave Heart           1014 Brave Heart                             
+
+1 row selected.
+
+
+Package created.
+
+
+Package body created.
+
+
+Trigger created.
+
+
+Trigger created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+no rows selected
+
+
+0 rows deleted.
+
+
+no rows selected
+
+
+Table altered.
+
+
+Table altered.
+
+
+1 row created.
+
+
+Common Lookup  Common Lookup  Common Lookup                                     
+Table          Column         Type                                              
+-------------- -------------- --------------                                    
+ITEM           ITEM_TYPE      BLU-RAY                                           
+
+1 row selected.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+ Item                                           Item   Item                     
+ ID # Item Title           Item Subtitle        Rating Type                     
+----- -------------------- -------------------- ------ ------------------       
+ 1094 Bourne               <Null>               PG-13  Blu-ray                  
+ 1095 Bourne Legacy        <Null>               PG-13  Blu-ray                  
+ 1096 Star Wars            The Force Awakens    PG-13  Blu-ray                  
+
+3 rows selected.
+
+
+         Old                        New                                         
+Logger  Item                       Item                                         
+  ID #  ID # Old Item Title        ID # New Item Title                          
+------ ----- -------------------- ----- ------------------------------          
+     1  1014 Brave Heart           1014 Brave Heart                             
+     2 <Null <Null>                1095 Bourne Legacy:                          
+       >                                                                        
+                                                                                
+     3 <Null <Null>                1096 Star Wars: The Force Awakens            
+       >                                                                        
+                                                                                
+
+3 rows selected.
+
+UPDATE item
+       *
+ERROR at line 1:
+ORA-04092: cannot ROLLBACK in a trigger
+ORA-06512: at "STUDENT.ITEM_TRIG", line 86
+ORA-20001: No colons allowed in item titles
+ORA-04088: error during execution of trigger 'STUDENT.ITEM_TRIG' 
+
+
+
+ Item                                           Item   Item                     
+ ID # Item Title           Item Subtitle        Rating Type                     
+----- -------------------- -------------------- ------ ------------------       
+ 1094 Bourne               <Null>               PG-13  Blu-ray                  
+ 1095 Bourne Legacy        <Null>               PG-13  Blu-ray                  
+ 1096 Star Wars            The Force Awakens    PG-13  Blu-ray                  
+
+3 rows selected.
+
+
+         Old                        New                                         
+Logger  Item                       Item                                         
+  ID #  ID # Old Item Title        ID # New Item Title                          
+------ ----- -------------------- ----- ------------------------------          
+     1  1014 Brave Heart           1014 Brave Heart                             
+     2 <Null <Null>                1095 Bourne Legacy:                          
+       >                                                                        
+                                                                                
+     3 <Null <Null>                1096 Star Wars: The Force Awakens            
+       >                                                                        
+                                                                                
+     4  1096 Star Wars             1096 Star Wars: The Force Awakens            
+
+4 rows selected.
+
+
+1 row deleted.
+
+
+ Item                                           Item   Item                     
+ ID # Item Title           Item Subtitle        Rating Type                     
+----- -------------------- -------------------- ------ ------------------       
+ 1094 Bourne               <Null>               PG-13  Blu-ray                  
+ 1095 Bourne Legacy        <Null>               PG-13  Blu-ray                  
+
+2 rows selected.
+
+
+         Old                        New                                         
+Logger  Item                       Item                                         
+  ID #  ID # Old Item Title        ID # New Item Title                          
+------ ----- -------------------- ----- ------------------------------          
+     1  1014 Brave Heart           1014 Brave Heart                             
+     2 <Null <Null>                1095 Bourne Legacy:                          
+       >                                                                        
+                                                                                
+     3 <Null <Null>                1096 Star Wars: The Force Awakens            
+       >                                                                        
+                                                                                
+     4  1096 Star Wars             1096 Star Wars: The Force Awakens            
+     5  1096 Star Wars            <Null <Null>                                  
+                                  >                                             
+                                                                                
+
+5 rows selected.
+
