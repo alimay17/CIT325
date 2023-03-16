@@ -209,7 +209,7 @@ CREATE OR REPLACE PACKAGE BODY manage_item IS
     pv_old_update_date        DATE,				
     pv_old_text_file_name     VARCHAR2
   ) IS
-
+    PRAGMA AUTONOMOUS_TRANSACTION;
     BEGIN
       INSERT INTO logger(
         logger_id,
@@ -268,6 +268,7 @@ CREATE OR REPLACE PACKAGE BODY manage_item IS
         pv_old_update_date,				
         pv_old_text_file_name
       );
+      COMMIT;
   END;
   -- end item_insert 1 (update item)
 
@@ -372,8 +373,96 @@ END manage_item; -- end package body
 /* ||  END Part 2 || */
 
 /*
-|| Part 3 - 
+|| Part 3 - create triggers
 */
+
+-- trigger 1 - item_trig (add or update item)
+CREATE OR REPLACE TRIGGER item_trig
+  BEFORE INSERT OR UPDATE OF item_title ON item
+  FOR EACH ROW WHEN (REGEXP_LIKE(NEW.item_title, ':'))
+
+  DECLARE
+    e EXCEPTION;
+    PRAGMA EXCEPTION_INIT(e,-20001);
+    lv_input_title VARCHAR2(60);
+    
+  BEGIN
+    IF INSERTING THEN
+      lv_input_title := substr(:NEW.item_title, 1, 60);
+
+      -- has colon but no subtitle
+      IF REGEXP_INSTR(lv_input_title,':') > 0 AND
+         REGEXP_INSTR(lv_input_title,':') = LENGTH(lv_input_title) THEN
+        -- remove colon
+        :NEW.item_title := SUBSTR(lv_input_title, 1, REGEXP_INSTR(lv_input_title,':') - 1);
+
+      -- has colon with subtitle
+      ELSIF REGEXP_INSTR(lv_input_title,':') > 0 THEN
+        -- split into title and subtitle
+        :NEW.item_title := SUBSTR(lv_input_title, 1, REGEXP_INSTR(lv_input_title,':') - 1);
+        :NEW.item_subtitle := LTRIM(SUBSTR(lv_input_title,REGEXP_INSTR(lv_input_title,':') + 1, LENGTH(lv_input_title)));
+      
+      -- no colon and no subtitle assign as is
+      ELSE
+        :NEW.item_title := lv_input_title;
+      END IF;
+
+      manage_item.item_insert(
+        pv_new_item_id             => :NEW.item_id,
+        pv_new_item_barcode        => :NEW.item_barcode,
+        pv_new_item_type           => :NEW.item_type,
+        pv_new_item_title          => :NEW.item_title,
+        pv_new_item_subtitle       => :NEW.item_subtitle,	
+        pv_new_item_rating         => :NEW.item_rating,
+        pv_new_item_rating_agency  => :NEW.item_rating_agency,
+        pv_new_item_release_date   => :NEW.item_release_date,
+        pv_new_created_by          => :NEW.created_by,
+        pv_new_creation_date       => :NEW.creation_date,
+        pv_new_updated_by     => :NEW.last_updated_by,
+        pv_new_update_date    => :NEW.last_update_date,
+        pv_new_text_file_name      => :NEW.text_file_name
+      );
+
+    ELSIF UPDATING THEN
+      -- log attems
+      manage_item.item_insert(
+        pv_new_item_id             => :NEW.item_id,
+        pv_new_item_barcode        => :NEW.item_barcode,
+        pv_new_item_type           => :NEW.item_type,
+        pv_new_item_title          => :NEW.item_title,
+        pv_new_item_subtitle       => :NEW.item_subtitle,	
+        pv_new_item_rating         => :NEW.item_rating,
+        pv_new_item_rating_agency  => :NEW.item_rating_agency,
+        pv_new_item_release_date   => :NEW.item_release_date,
+        pv_new_created_by          => :NEW.created_by,
+        pv_new_creation_date       => :NEW.creation_date,
+        pv_new_updated_by     => :NEW.last_updated_by,
+        pv_new_update_date    => :NEW.last_update_date,
+        pv_new_text_file_name      => :NEW.text_file_name,
+        pv_old_item_id             => :OLD.item_id,
+        pv_old_item_barcode        => :OLD.item_barcode,
+        pv_old_item_type           => :OLD.item_type,
+        pv_old_item_title          => :OLD.item_title,
+        pv_old_item_subtitle       => :OLD.item_subtitle,	
+        pv_old_item_rating         => :OLD.item_rating,
+        pv_old_item_rating_agency  => :OLD.item_rating_agency,
+        pv_old_item_release_date   => :OLD.item_release_date,
+        pv_old_created_by          => :OLD.created_by,
+        pv_old_creation_date       => :OLD.creation_date,
+        pv_old_updated_by     => :OLD.last_updated_by,
+        pv_old_update_date    => :OLD.last_update_date,
+        pv_old_text_file_name      => :OLD.text_file_name
+      );
+
+      -- raise error
+      RAISE_APPLICATION_ERROR(-20001,'No colons allowed in item titles');
+    END IF;
+  END;
+  /
+-- end item_trig
+
+-- trigger 2 - item_delete_trig (delete item)
+
 
 /* ||  END Part 3 || */
 -- Close log file.
