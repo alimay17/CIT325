@@ -704,7 +704,7 @@ FROM   item i INNER JOIN common_lookup cl
 ON     i.item_type = cl.common_lookup_id
 WHERE  cl.common_lookup_type = 'BLU-RAY';
 
---- check logger table
+--- check logger table - should see new values
 COL logger_id       FORMAT 9999 HEADING "Logger|ID #"
 COL old_item_id     FORMAT 9999 HEADING "Old|Item|ID #"
 COL old_item_title  FORMAT A20  HEADING "Old Item Title"
@@ -737,7 +737,7 @@ FROM   item i INNER JOIN common_lookup cl
 ON     i.item_type = cl.common_lookup_id
 WHERE  cl.common_lookup_type = 'BLU-RAY';
 
--- check logger table
+-- check logger table - should see old and new for star wars
 COL logger_id       FORMAT 9999 HEADING "Logger|ID #"
 COL old_item_id     FORMAT 9999 HEADING "Old|Item|ID #"
 COL old_item_title  FORMAT A20  HEADING "Old Item Title"
@@ -769,7 +769,7 @@ FROM   item i INNER JOIN common_lookup cl
 ON     i.item_type = cl.common_lookup_id
 WHERE  cl.common_lookup_type = 'BLU-RAY';
 
--- check logger table
+-- check logger table - should see old for star wars
 COL logger_id       FORMAT 9999 HEADING "Logger|ID #"
 COL old_item_id     FORMAT 9999 HEADING "Old|Item|ID #"
 COL old_item_title  FORMAT A20  HEADING "Old Item Title"
