@@ -6,18 +6,24 @@
 */
 
 /* Call seeding libraries */
--- @$LIB/cleanup_oracle.sql
--- @$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
+@$LIB/cleanup_oracle.sql
+@$LIB/Oracle12cPLSQLCode/Introduction/create_video_store.sql
 
 -- Open log file.
 SPOOL apply_plsql_lab11.txt
 SET SERVEROUTPUT ON SIZE UNLIMITED
 
+/* Clean up database */
+
 -- add text_file_name column to item table
 ALTER TABLE item
   ADD (text_file_name VARCHAR2(40));
 
-/* Clean up database */
+-- set item_desc to accept null values
+ALTER TABLE item
+  MODIFY (item_desc NULL);
+
+-- remove logger table and sequence
 DROP TABLE logger;
 DROP SEQUENCE logger_s;
 
@@ -466,7 +472,7 @@ CREATE OR REPLACE TRIGGER item_trig
   -- handle errors
   EXCEPTION
    WHEN e THEN
-     ROLLBACK;
+      ROLLBACK;
       dbms_output.put_line('[Trigger Event: '||lv_event_type||']');
       dbms_output.put_line(SQLERRM);
    WHEN OTHERS THEN
@@ -503,6 +509,278 @@ CREATE OR REPLACE TRIGGER item_delete_trig
 /*
 || Testing
 */
+
+-- drop existing fk_item_1
+ALTER TABLE item
+    DROP CONSTRAINT fk_item_1;
+
+-- add on delete cascade fk_item_1
+ALTER TABLE item
+    ADD CONSTRAINT fk_item_1
+    FOREIGN KEY (item_type)
+    REFERENCES common_lookup(common_lookup_id)
+    ON DELETE CASCADE;
+
+-- check for 'Star Wars' item
+COL item_id        FORMAT 9999 HEADING "Item|ID #"
+COL item_title     FORMAT A20  HEADING "Item Title"
+COL item_subtitle  FORMAT A20  HEADING "Item Subtitle"
+COL item_type      FORMAT 9999 HEADING "Item|Type"
+COL item_rating    FORMAT A6   HEADING "Item|Rating"
+SELECT i.item_id
+,      i.item_title
+,      i.item_subtitle
+,      i.item_type
+,      i.item_rating
+FROM   item i
+WHERE  i.item_title = 'Star Wars';
+
+-- remove row from common_lookup
+DELETE FROM common_lookup 
+    WHERE common_lookup_table = 'ITEM' 
+        AND common_lookup_column = 'ITEM_TYPE' 
+        AND common_lookup_type = 'BLU-RAY';
+
+-- verify delete
+COL item_id        FORMAT 9999 HEADING "Item|ID #"
+COL item_title     FORMAT A20  HEADING "Item Title"
+COL item_subtitle  FORMAT A20  HEADING "Item Subtitle"
+COL item_type      FORMAT 9999 HEADING "Item|Type"
+COL item_rating    FORMAT A6   HEADING "Item|Rating"
+SELECT i.item_id
+,      i.item_title
+,      i.item_subtitle
+,      i.item_type
+,      i.item_rating
+FROM   item i
+WHERE  i.item_title = 'Star Wars';
+
+-- set fk_item_1 back to default
+ALTER TABLE item
+    DROP CONSTRAINT fk_item_1;
+
+ALTER TABLE item
+    ADD CONSTRAINT fk_item_1
+    FOREIGN KEY (item_type)
+    REFERENCES common_lookup(common_lookup_id);
+
+-- insert new row into common_lookup
+INSERT INTO common_lookup(
+  common_lookup_id,
+  common_lookup_table,
+  common_lookup_column,
+  common_lookup_type,
+  common_lookup_code,
+  common_lookup_meaning,
+  created_by,
+  creation_date,
+  last_updated_by,
+  last_update_date
+) VALUES(
+  common_lookup_s1.NEXTVAL,
+  'ITEM',
+  'ITEM_TYPE',
+  'BLU-RAY',
+  NULL,
+  'Blu-ray',
+  3,
+  SYSDATE,
+  3,
+  SYSDATE
+);
+
+-- verify insertion
+COL common_lookup_table   FORMAT A14 HEADING "Common Lookup|Table"
+COL common_lookup_column  FORMAT A14 HEADING "Common Lookup|Column"
+COL common_lookup_type    FORMAT A14 HEADING "Common Lookup|Type"
+SELECT common_lookup_table
+,      common_lookup_column
+,      common_lookup_type
+FROM   common_lookup
+WHERE  common_lookup_table = 'ITEM'
+AND    common_lookup_column = 'ITEM_TYPE'
+AND    common_lookup_type = 'BLU-RAY';
+
+-- insert 3 rows to item to test trigger
+-- 1. normal
+INSERT INTO ITEM (
+  item_id,
+  item_barcode,
+  item_type,
+  item_title,
+  item_subtitle,
+  item_rating,
+  item_rating_agency,
+  item_release_date,
+  created_by,
+  creation_date,
+  last_updated_by,
+  last_update_date     
+) VALUES(
+  item_s1.NEXTVAL,
+  'B01IHVPA8',
+  1049,
+  'Bourne',
+  NULL,
+  'PG-13',
+  'MPAA',
+  '06-DEC-2016',
+  3,
+  SYSDATE,
+  3,
+  SYSDATE
+);
+
+-- 2. with colon no subtitle 
+INSERT INTO ITEM (
+  item_id,
+  item_barcode,
+  item_type,
+  item_title,
+  item_subtitle,
+  item_rating,
+  item_rating_agency,
+  item_release_date,
+  created_by,
+  creation_date,
+  last_updated_by,
+  last_update_date     
+) VALUES(
+  item_s1.NEXTVAL,
+  'B01AT251XY',
+  1049,
+  'Bourne Legacy:',
+  NULL,
+  'PG-13',
+  'MPAA',
+  '05-APR-2016',
+  3,
+  SYSDATE,
+  3,
+  SYSDATE
+);
+
+-- 3. with colon and subtitle
+INSERT INTO ITEM (
+  item_id,
+  item_barcode,
+  item_type,
+  item_title,
+  item_subtitle,
+  item_rating,
+  item_rating_agency,
+  item_release_date,
+  created_by,
+  creation_date,
+  last_updated_by,
+  last_update_date     
+) VALUES(
+  item_s1.NEXTVAL,
+  'B018FK66TU',
+  1049,
+  'Star Wars: The Force Awakens',
+  NULL,
+  'PG-13',
+  'MPAA',
+  '05-APR-2016',
+  3,
+  SYSDATE,
+  3,
+  SYSDATE
+);
+
+-- verify insertions - should not see colons
+COL item_id        FORMAT 9999 HEADING "Item|ID #"
+COL item_title     FORMAT A20  HEADING "Item Title"
+COL item_subtitle  FORMAT A20  HEADING "Item Subtitle"
+COL item_rating    FORMAT A6   HEADING "Item|Rating"
+COL item_type      FORMAT A18   HEADING "Item|Type"
+SELECT i.item_id
+,      i.item_title
+,      i.item_subtitle
+,      i.item_rating
+,      cl.common_lookup_meaning AS item_type
+FROM   item i INNER JOIN common_lookup cl
+ON     i.item_type = cl.common_lookup_id
+WHERE  cl.common_lookup_type = 'BLU-RAY';
+
+--- check logger table
+COL logger_id       FORMAT 9999 HEADING "Logger|ID #"
+COL old_item_id     FORMAT 9999 HEADING "Old|Item|ID #"
+COL old_item_title  FORMAT A20  HEADING "Old Item Title"
+COL new_item_id     FORMAT 9999 HEADING "New|Item|ID #"
+COL new_item_title  FORMAT A30  HEADING "New Item Title"
+SELECT l.logger_id
+,      l.old_item_id
+,      l.old_item_title
+,      l.new_item_id
+,      l.new_item_title
+FROM   logger l;
+
+-- update row to test update trigger
+UPDATE item
+  SET item_title = 'Star Wars: The Force Awakens'
+  WHERE item_title = 'Star Wars' AND item_subtitle = 'The Force Awakens';
+
+-- verify item was not updated
+COL item_id        FORMAT 9999 HEADING "Item|ID #"
+COL item_title     FORMAT A20  HEADING "Item Title"
+COL item_subtitle  FORMAT A20  HEADING "Item Subtitle"
+COL item_rating    FORMAT A6   HEADING "Item|Rating"
+COL item_type      FORMAT A18   HEADING "Item|Type"
+SELECT i.item_id
+,      i.item_title
+,      i.item_subtitle
+,      i.item_rating
+,      cl.common_lookup_meaning AS item_type
+FROM   item i INNER JOIN common_lookup cl
+ON     i.item_type = cl.common_lookup_id
+WHERE  cl.common_lookup_type = 'BLU-RAY';
+
+-- check logger table
+COL logger_id       FORMAT 9999 HEADING "Logger|ID #"
+COL old_item_id     FORMAT 9999 HEADING "Old|Item|ID #"
+COL old_item_title  FORMAT A20  HEADING "Old Item Title"
+COL new_item_id     FORMAT 9999 HEADING "New|Item|ID #"
+COL new_item_title  FORMAT A30  HEADING "New Item Title"
+SELECT l.logger_id
+,      l.old_item_id
+,      l.old_item_title
+,      l.new_item_id
+,      l.new_item_title
+FROM   logger l;
+
+-- delete item to test delete trigger
+DELETE FROM item 
+  WHERE item_title = 'Star Wars' AND item_subtitle = 'The Force Awakens';
+
+-- verify delete
+COL item_id        FORMAT 9999 HEADING "Item|ID #"
+COL item_title     FORMAT A20  HEADING "Item Title"
+COL item_subtitle  FORMAT A20  HEADING "Item Subtitle"
+COL item_rating    FORMAT A6   HEADING "Item|Rating"
+COL item_type      FORMAT A18   HEADING "Item|Type"
+SELECT i.item_id
+,      i.item_title
+,      i.item_subtitle
+,      i.item_rating
+,      cl.common_lookup_meaning AS item_type
+FROM   item i INNER JOIN common_lookup cl
+ON     i.item_type = cl.common_lookup_id
+WHERE  cl.common_lookup_type = 'BLU-RAY';
+
+-- check logger table
+COL logger_id       FORMAT 9999 HEADING "Logger|ID #"
+COL old_item_id     FORMAT 9999 HEADING "Old|Item|ID #"
+COL old_item_title  FORMAT A20  HEADING "Old Item Title"
+COL new_item_id     FORMAT 9999 HEADING "New|Item|ID #"
+COL new_item_title  FORMAT A30  HEADING "New Item Title"
+SELECT l.logger_id
+,      l.old_item_id
+,      l.old_item_title
+,      l.new_item_id
+,      l.new_item_title
+FROM   logger l;
 
 /* ||  END testing || */
 
