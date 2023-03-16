@@ -421,7 +421,7 @@ CREATE OR REPLACE TRIGGER item_trig
         pv_new_item_id             => :NEW.item_id,
         pv_new_item_barcode        => :NEW.item_barcode,
         pv_new_item_type           => :NEW.item_type,
-        pv_new_item_title          => :NEW.item_title,
+        pv_new_item_title          => lv_input_title,
         pv_new_item_subtitle       => :NEW.item_subtitle,	
         pv_new_item_rating         => :NEW.item_rating,
         pv_new_item_rating_agency  => :NEW.item_rating_agency,
