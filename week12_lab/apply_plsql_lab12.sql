@@ -102,8 +102,7 @@ desc item_list;
 -- test item_list with start_date as 1 Jan 20000
 SELECT title, rating 
 FROM TABLE(item_list('01-JAN-2000'))
-ORDER by 1, 2 ASC;
-
+ORDER by title ASC, rating DESC;
 
 -- Close log file.
 SPOOL OFF
