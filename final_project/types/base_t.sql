@@ -6,6 +6,8 @@
 */
 SPOOL 'logs/base_t.txt'
 
+DROP TYPE base_t FORCE;
+
 /* Create new base object */
 -- base_t declaration
 CREATE OR REPLACE TYPE base_t IS OBJECT(
@@ -64,7 +66,7 @@ CREATE OR REPLACE TYPE BODY base_t IS
     -- other
     MEMBER FUNCTION to_string RETURN VARCHAR2 IS
         BEGIN
-        RETURN '['||self.oid||']['||self.oname||']';
+        RETURN '['||self.oid||']';
     END to_string;
 END;
 /
