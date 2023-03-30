@@ -16,19 +16,19 @@ declare -a cmd
 cmd[0]="types/base_t.sql"
 cmd[1]="create_tolkien.sql"
 cmd[2]="types/dwarf_t.sql"
-# cmd[3]="elf_t.sql"
+cmd[3]="types/elf_t.sql"
 # cmd[4]="goblin_t.sql"
 # cmd[5]="hobbit_t.sql"
 # cmd[6]="maia_t.sql"
 # cmd[7]="man_t.sql"
 # cmd[8]="orc_t.sql"
-# cmd[9]="noldor_t.sql"
+cmd[4]="types/elf_subtypes/noldor_t.sql"
 # cmd[10]="silvan_t.sql"
 # cmd[11]="sindar_t.sql"
 # cmd[12]="teleri_t.sql"
 # cmd[13]="type_validation.sql"
-cmd[3]="insert_instances.sql"
-cmd[4]="query_instances.sql"
+cmd[5]="insert_instances.sql"
+cmd[6]="query_instances.sql"
 
 # Call the array elements.
 for i in ${cmd[*]}; do

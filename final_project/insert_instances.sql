@@ -7,7 +7,7 @@
 -- Open the log file.
 SPOOL 'logs/insert_instances.txt'
 
-
+-- insert dwarf
 INSERT INTO tolkien( 
   tolkien_id,
   tolkien_character
@@ -20,10 +20,25 @@ INSERT INTO tolkien(
     genus => 'Dwarves')
 );
 
+
+-- insert noldor
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  noldor_t( 
+    oid   => 9,
+    oname => 'ELF',
+    name  => 'Feanor',
+    genus => 'Elves',
+    elfkind => 'Noldor')
+);
+
 list
 show errors
 
 -- Close the log file.
 SPOOL OFF
 
-QUIT;
+QUIT
