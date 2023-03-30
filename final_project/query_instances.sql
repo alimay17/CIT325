@@ -3,7 +3,7 @@
 --  Author:  Michael McLaughlin
 --  Date:    02-Apr-2020
 -- ------------------------------------------------------------------
---  Purpose: Prepare final project environment.
+--  Purpose: Query results of final project
 -- ======================================================================
 
 /* Set environment variables. */

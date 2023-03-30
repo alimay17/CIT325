@@ -1,7 +1,7 @@
 /*
 ||  Name:         insert_instances.sql
 ||  Date:         28 Mar 2023
-||  Purpose:      Create dwarf subtype
+||  Purpose:      Insert objects into tolkien table
 ||  Author:       Alice Smith  
 */
 -- Open the log file.

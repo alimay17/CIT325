@@ -9,6 +9,9 @@ echo "User name:" ${username}
 echo "Password: " ${password}
 echo "Directory:" ${directory}
 
+# create logs directory
+# mkdir ${directory}/logs
+
 # Define an array.
 declare -a cmd
 
@@ -26,15 +29,15 @@ cmd[4]="types/elf_subtypes/noldor_t.sql"
 # cmd[10]="silvan_t.sql"
 # cmd[11]="sindar_t.sql"
 # cmd[12]="teleri_t.sql"
-# cmd[13]="type_validation.sql"
-cmd[5]="insert_instances.sql"
-cmd[6]="query_instances.sql"
+cmd[5]="type_validation.sql"
+cmd[6]="insert_instances.sql"
+cmd[7]="query_instances.sql"
 
 # Call the array elements.
 for i in ${cmd[*]}; do
   sqlplus -s ${username}/${password} @${directory}/${i} > /dev/null
 done
 
-# Print query log files.
-# cat type_validation.txt
+# Print query log files
+cat logs/type_validation.txt
 cat logs/query_instances.txt
