@@ -20,7 +20,6 @@ INSERT INTO tolkien(
     genus => 'Men'
   )
 );
-
 INSERT INTO tolkien( 
   tolkien_id,
   tolkien_character
@@ -30,6 +29,18 @@ INSERT INTO tolkien(
     oid   => 2,
     oname => 'Man',
     name  => 'Faramir',
+    genus => 'Men'
+  )
+);
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  man_t( 
+    oid   => 21,
+    oname => 'Man',
+    name  => 'Aragorn',
     genus => 'Men'
   )
 );
@@ -47,7 +58,6 @@ INSERT INTO tolkien(
     genus => 'Hobbits'
   )
 );
-
 INSERT INTO tolkien( 
   tolkien_id,
   tolkien_character
@@ -60,7 +70,6 @@ INSERT INTO tolkien(
     genus => 'Hobbits'
   )
 );
-
 INSERT INTO tolkien( 
   tolkien_id,
   tolkien_character
@@ -73,7 +82,6 @@ INSERT INTO tolkien(
     genus => 'Hobbits'
   )
 );
-
 INSERT INTO tolkien( 
   tolkien_id,
   tolkien_character
@@ -86,7 +94,6 @@ INSERT INTO tolkien(
     genus => 'Hobbits'
   )
 );
-
 INSERT INTO tolkien( 
   tolkien_id,
   tolkien_character
@@ -153,7 +160,6 @@ INSERT INTO tolkien(
     genus => 'Elves',
     elfkind => 'Teleri')
 );
-
 INSERT INTO tolkien( 
   tolkien_id,
   tolkien_character
@@ -166,7 +172,6 @@ INSERT INTO tolkien(
     genus => 'Elves',
     elfkind => 'Teleri')
 );
-
 -- sindar
 INSERT INTO tolkien( 
   tolkien_id,
@@ -180,7 +185,6 @@ INSERT INTO tolkien(
     genus => 'Elves',
     elfkind => 'Sindar')
 );
-
 INSERT INTO tolkien( 
   tolkien_id,
   tolkien_character
