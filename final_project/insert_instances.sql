@@ -20,7 +20,6 @@ INSERT INTO tolkien(
     genus => 'Dwarves')
 );
 
-
 -- insert noldor
 INSERT INTO tolkien( 
   tolkien_id,
@@ -33,6 +32,20 @@ INSERT INTO tolkien(
     name  => 'Feanor',
     genus => 'Elves',
     elfkind => 'Noldor')
+);
+
+-- insert goblin
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  goblin_t( 
+    oid   => 20,
+    oname => 'Goblin',
+    name  => 'The Great Goblin',
+    genus => 'Goblins'
+  )
 );
 
 
