@@ -113,7 +113,8 @@ INSERT INTO tolkien(
     genus => 'Dwarves')
 );
 
--- insert noldor
+-- insert elf types
+-- noldor
 INSERT INTO tolkien( 
   tolkien_id,
   tolkien_character
@@ -125,6 +126,72 @@ INSERT INTO tolkien(
     name  => 'Feanor',
     genus => 'Elves',
     elfkind => 'Noldor')
+);
+-- silvan
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  noldor_t( 
+    oid   => 10,
+    oname => 'Elf',
+    name  => 'Tauriel',
+    genus => 'Elves',
+    elfkind => 'Silvan')
+);
+-- teleri
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  noldor_t( 
+    oid   => 11,
+    oname => 'Elf',
+    name  => 'Earwen',
+    genus => 'Elves',
+    elfkind => 'Teleri')
+);
+
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  noldor_t( 
+    oid   => 12,
+    oname => 'Elf',
+    name  => 'Celeborn',
+    genus => 'Elves',
+    elfkind => 'Teleri')
+);
+
+-- sindar
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  noldor_t( 
+    oid   => 13,
+    oname => 'Elf',
+    name  => 'Thranduil',
+    genus => 'Elves',
+    elfkind => 'Sindar')
+);
+
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  noldor_t( 
+    oid   => 14,
+    oname => 'Elf',
+    name  => 'Legolas',
+    genus => 'Elves',
+    elfkind => 'Sindar')
 );
 
 -- insert orc
