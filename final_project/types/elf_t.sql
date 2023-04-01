@@ -7,8 +7,6 @@
 
 SPOOL 'logs/elf_t.txt'
 
-DROP TYPE elf_t FORCE;
-
 -- elf_t declaration
 CREATE OR REPLACE TYPE elf_t UNDER base_t (
     -- properties unique to subtype

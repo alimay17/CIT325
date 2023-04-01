@@ -7,8 +7,6 @@
 
 SPOOL 'logs/teleri_t.txt'
 
-DROP TYPE teleri_t FORCE;
-
 -- teleri_t declaration
 CREATE OR REPLACE TYPE teleri_t UNDER elf_t (
     -- properties unique to subtype

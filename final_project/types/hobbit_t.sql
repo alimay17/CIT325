@@ -7,8 +7,6 @@
 
 SPOOL 'logs/hobbit_t.txt'
 
-DROP TYPE hobbit_t FORCE;
-
 -- hobbit_t declaration
 CREATE OR REPLACE TYPE hobbit_t UNDER base_t (
     -- properties unique to subtype

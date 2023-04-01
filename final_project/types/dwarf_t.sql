@@ -7,8 +7,6 @@
 
 SPOOL 'logs/dwarf_t.txt'
 
-DROP TYPE dwarf_t FORCE;
-
 -- dwarf_t declaration
 CREATE OR REPLACE TYPE dwarf_t UNDER base_t (
     -- properties unique to subtype

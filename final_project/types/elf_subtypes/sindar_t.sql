@@ -7,8 +7,6 @@
 
 SPOOL 'logs/sindar_t.txt'
 
-DROP TYPE sindar_t FORCE;
-
 -- sindar_t declaration
 CREATE OR REPLACE TYPE sindar_t UNDER elf_t (
     -- properties unique to subtype

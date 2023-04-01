@@ -7,8 +7,6 @@
 
 SPOOL 'logs/goblin_t.txt'
 
-DROP TYPE goblin_t FORCE;
-
 -- goblin_t declaration
 CREATE OR REPLACE TYPE goblin_t UNDER base_t (
     -- properties unique to subtype

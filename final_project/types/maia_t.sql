@@ -7,8 +7,6 @@
 
 SPOOL 'logs/maia_t.txt'
 
-DROP TYPE maia_t FORCE;
-
 -- maia_t declaration
 CREATE OR REPLACE TYPE maia_t UNDER base_t (
     -- properties unique to subtype

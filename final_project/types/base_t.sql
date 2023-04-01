@@ -6,8 +6,6 @@
 */
 SPOOL 'logs/base_t.txt'
 
-DROP TYPE base_t FORCE;
-
 /* Create new base object */
 -- base_t declaration
 CREATE OR REPLACE TYPE base_t IS OBJECT(

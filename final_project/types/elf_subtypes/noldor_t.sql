@@ -7,8 +7,6 @@
 
 SPOOL 'logs/noldor_t.txt'
 
-DROP TYPE noldor_t FORCE;
-
 -- noldor_t declaration
 CREATE OR REPLACE TYPE noldor_t UNDER elf_t (
     -- properties unique to subtype

@@ -7,8 +7,6 @@
 
 SPOOL 'logs/man_t.txt'
 
-DROP TYPE man_t FORCE;
-
 -- man_t declaration
 CREATE OR REPLACE TYPE man_t UNDER base_t (
     -- properties unique to subtype

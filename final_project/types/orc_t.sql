@@ -7,8 +7,6 @@
 
 SPOOL 'logs/orc_t.txt'
 
-DROP TYPE orc_t FORCE;
-
 -- orc_t declaration
 CREATE OR REPLACE TYPE orc_t UNDER base_t (
     -- properties unique to subtype

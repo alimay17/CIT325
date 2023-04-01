@@ -7,8 +7,6 @@
 
 SPOOL 'logs/silvan_t.txt'
 
-DROP TYPE silvan_t FORCE;
-
 -- silvan_t declaration
 CREATE OR REPLACE TYPE silvan_t UNDER elf_t (
     -- properties unique to subtype
