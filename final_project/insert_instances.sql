@@ -32,18 +32,6 @@ INSERT INTO tolkien(
     genus => 'Men'
   )
 );
-INSERT INTO tolkien( 
-  tolkien_id,
-  tolkien_character
-) VALUES (
-  tolkien_s.NEXTVAL,
-  man_t( 
-    oid   => 21,
-    oname => 'Man',
-    name  => 'Aragorn',
-    genus => 'Men'
-  )
-);
 
 -- insert hobbit
 INSERT INTO tolkien( 
@@ -279,6 +267,19 @@ INSERT INTO tolkien(
   )
 );
 
+-- insert aragorn
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  man_t( 
+    oid   => 21,
+    oname => 'Man',
+    name  => 'Aragorn',
+    genus => 'Men'
+  )
+);
 
 -- Close the log file.
 SPOOL OFF
