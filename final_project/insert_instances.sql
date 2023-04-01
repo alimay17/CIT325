@@ -7,6 +7,72 @@
 -- Open the log file.
 SPOOL 'logs/insert_instances.txt'
 
+-- insert hobbit
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  hobbit_t( 
+    oid   => 3,
+    oname => 'Hobbit',
+    name  => 'Bilbo',
+    genus => 'Hobbits'
+  )
+);
+
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  hobbit_t( 
+    oid   => 4,
+    oname => 'Hobbit',
+    name  => 'Frodo',
+    genus => 'Hobbits'
+  )
+);
+
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  hobbit_t( 
+    oid   => 5,
+    oname => 'Hobbit',
+    name  => 'Merry',
+    genus => 'Hobbits'
+  )
+);
+
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  hobbit_t( 
+    oid   => 6,
+    oname => 'Hobbit',
+    name  => 'Pippin',
+    genus => 'Hobbits'
+  )
+);
+
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  hobbit_t( 
+    oid   => 7,
+    oname => 'Hobbit',
+    name  => 'Samwise',
+    genus => 'Hobbits'
+  )
+);
+
 -- insert dwarf
 INSERT INTO tolkien( 
   tolkien_id,
@@ -54,7 +120,7 @@ INSERT INTO tolkien(
 ) VALUES (
   tolkien_s.NEXTVAL,
   maia_t( 
-    oid   => 17,
+    oid   => 18,
     oname => 'Maia',
     name  => 'Radagast the Brown',
     genus => 'Maiar'
@@ -67,7 +133,7 @@ INSERT INTO tolkien(
 ) VALUES (
   tolkien_s.NEXTVAL,
   maia_t( 
-    oid   => 17,
+    oid   => 19,
     oname => 'Maia',
     name  => 'Saruman the White',
     genus => 'Maiar'
