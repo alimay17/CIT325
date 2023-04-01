@@ -41,8 +41,6 @@ CREATE OR REPLACE TYPE BODY elf_t IS
       genus VARCHAR2
     ) RETURN SELF AS RESULT IS
       BEGIN
-        self.oid   := tolkien_s.CURRVAL;
-        self.oname := 'Elf';
         self.name  := name;
         self.genus := genus;
       RETURN;

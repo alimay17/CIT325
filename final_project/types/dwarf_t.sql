@@ -12,8 +12,8 @@ DROP TYPE dwarf_t FORCE;
 -- dwarf_t declaration
 CREATE OR REPLACE TYPE dwarf_t UNDER base_t (
     -- properties unique to subtype
-    name  VARCHAR2(30),
-    genus VARCHAR2(30),
+    name    VARCHAR2(30),
+    genus   VARCHAR2(30),
 
     -- subtype constructor
     CONSTRUCTOR FUNCTION dwarf_t(
@@ -41,8 +41,6 @@ CREATE OR REPLACE TYPE BODY dwarf_t IS
       genus VARCHAR2
     ) RETURN SELF AS RESULT IS
       BEGIN
-        self.oid   := tolkien_s.CURRVAL;
-        self.oname := 'Dwarf';
         self.name  := name;
         self.genus := genus;
       RETURN;

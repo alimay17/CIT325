@@ -13,9 +13,9 @@ INSERT INTO tolkien(
   tolkien_character
 ) VALUES (
   tolkien_s.NEXTVAL,
-  dwarf_t( 
+  dwarf_t(
     oid   => 8,
-    oname => 'DWARF',
+    oname => 'Dwarf',
     name  => 'Gimli',
     genus => 'Dwarves')
 );
@@ -29,14 +29,12 @@ INSERT INTO tolkien(
   tolkien_s.NEXTVAL,
   noldor_t( 
     oid   => 9,
-    oname => 'ELF',
+    oname => 'Elf',
     name  => 'Feanor',
     genus => 'Elves',
     elfkind => 'Noldor')
 );
 
-list
-show errors
 
 -- Close the log file.
 SPOOL OFF
