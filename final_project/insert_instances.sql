@@ -34,6 +34,46 @@ INSERT INTO tolkien(
     elfkind => 'Noldor')
 );
 
+-- insert Maia
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  maia_t( 
+    oid   => 17,
+    oname => 'Maia',
+    name  => 'Gandalf the Grey',
+    genus => 'Maiar'
+  )
+);
+
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  maia_t( 
+    oid   => 17,
+    oname => 'Maia',
+    name  => 'Radagast the Brown',
+    genus => 'Maiar'
+  )
+);
+
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  maia_t( 
+    oid   => 17,
+    oname => 'Maia',
+    name  => 'Saruman the White',
+    genus => 'Maiar'
+  )
+);
+
 -- insert goblin
 INSERT INTO tolkien( 
   tolkien_id,
