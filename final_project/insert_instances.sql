@@ -127,6 +127,33 @@ INSERT INTO tolkien(
     elfkind => 'Noldor')
 );
 
+-- insert orc
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  man_t( 
+    oid   => 15,
+    oname => 'Orc',
+    name  => 'Azog the Defiler',
+    genus => 'Orcs'
+  )
+);
+
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  man_t( 
+    oid   => 16,
+    oname => 'Orc',
+    name  => 'Bolg',
+    genus => 'Orcs'
+  )
+);
+
 -- insert Maia
 INSERT INTO tolkien( 
   tolkien_id,
