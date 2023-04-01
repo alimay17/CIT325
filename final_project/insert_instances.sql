@@ -7,6 +7,33 @@
 -- Open the log file.
 SPOOL 'logs/insert_instances.txt'
 
+-- insert man
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  man_t( 
+    oid   => 1,
+    oname => 'Man',
+    name  => 'Boromir',
+    genus => 'Men'
+  )
+);
+
+INSERT INTO tolkien( 
+  tolkien_id,
+  tolkien_character
+) VALUES (
+  tolkien_s.NEXTVAL,
+  man_t( 
+    oid   => 2,
+    oname => 'Man',
+    name  => 'Faramir',
+    genus => 'Men'
+  )
+);
+
 -- insert hobbit
 INSERT INTO tolkien( 
   tolkien_id,
